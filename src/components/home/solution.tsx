@@ -1,19 +1,28 @@
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/section-heading";
 import { Reveal } from "@/components/ui/reveal";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-const NOT_LIST = [
+const STEPS = [
   {
-    title: "We are not a coaching centre.",
-    detail: "We do not train for exams. We build academic foundations.",
+    label: "Your Current School",
+    detail: "Your child stays enrolled exactly as they are. Same school, board, teachers, exams.",
   },
   {
-    title: "We are not an admissions consultancy.",
-    detail: "We do not promise admissions. We strengthen profiles through academics.",
+    label: "Go Early College",
+    detail:
+      "The AWS Dual Diploma adds a WASC-accredited US transcript. The only one of its kind for Indian school students.",
+    highlight: true,
   },
   {
-    title: "We are not an online course platform.",
-    detail: "We do not sell courses. We deliver accredited college-level education.",
+    label: "350+ US Universities",
+    detail: "The transcript unlocks credit-bearing courses. 3–4 real credits per course completed.",
+  },
+  {
+    label: "University",
+    detail:
+      "They apply with a transcript that most Indian students cannot produce. Credits earned. GPA established. Readiness proven.",
   },
 ];
 
@@ -21,37 +30,42 @@ export function Solution() {
   return (
     <section className="bg-charcoal py-24 text-ivory md:py-32">
       <Container>
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
-          <Reveal as="div" stagger className="flex flex-col gap-8">
-            <Eyebrow tone="gold">What We Are Not</Eyebrow>
-            {NOT_LIST.map((item) => (
-              <div key={item.title} className="flex gap-5 border-t border-ivory/10 pt-6">
-                <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-ivory/25 text-[13px] text-ivory/50">
-                  &times;
-                </span>
-                <div>
-                  <p className="font-serif text-lg text-ivory">{item.title}</p>
-                  <p className="mt-1.5 text-[15px] leading-relaxed text-ivory/55">{item.detail}</p>
-                </div>
-              </div>
-            ))}
-          </Reveal>
+        <div className="flex flex-col items-center gap-5 text-center">
+          <Eyebrow tone="gold">The Solution</Eyebrow>
+          <h2 className="max-w-3xl font-serif text-[clamp(2rem,4vw,3.25rem)] leading-[1.1] text-balance">
+            One program. Two diplomas. A US university future &mdash; built while your
+            child is still in school.
+          </h2>
+        </div>
 
-          <Reveal
-            as="div"
-            className="relative flex flex-col justify-center gap-8 rounded-sm border border-gold/25 bg-gradient-to-br from-crimson to-crimson-dark p-10 md:p-14"
-          >
-            <Eyebrow tone="gold">What We Are</Eyebrow>
-            <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] leading-[1.1] text-balance">
-              We are an Early College Access Institution.
-            </h2>
-            <div className="divider-diamond w-16" />
-            <p className="max-w-md text-[17px] leading-relaxed text-ivory/85">
-              We give ambitious students access to university-level opportunity
-              before university begins &mdash; so they can arrive stronger, earn
-              more, and achieve more.
-            </p>
-          </Reveal>
+        <Reveal as="div" stagger className="mt-16 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map((step, i) => (
+            <div key={step.label} className="flex flex-col gap-4">
+              <span
+                className={cn(
+                  "flex h-14 w-14 items-center justify-center rounded-full border font-serif text-xl",
+                  step.highlight
+                    ? "border-crimson bg-crimson text-ivory shadow-[0_16px_40px_-14px_rgba(122,15,20,0.55)]"
+                    : "border-ivory/25 text-ivory/70"
+                )}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="font-serif text-xl text-ivory">{step.label}</h3>
+              <p className="text-[14.5px] leading-relaxed text-ivory/60">{step.detail}</p>
+            </div>
+          ))}
+        </Reveal>
+
+        <p className="mt-16 text-center font-serif text-lg italic text-gold">
+          Earlier Access. Stronger Profile. Greater Future.
+        </p>
+
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <Button href="/program" variant="outline" className="border-ivory/35 text-ivory hover:bg-ivory/10">
+            See how it works in full →
+          </Button>
+          <p className="text-[13px] text-ivory/50">No commitment required to explore.</p>
         </div>
       </Container>
     </section>

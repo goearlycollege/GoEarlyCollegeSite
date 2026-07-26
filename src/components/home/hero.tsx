@@ -64,31 +64,33 @@ export function Hero() {
       <div className="hero-content relative z-10 mx-auto w-full max-w-[1360px] px-6 pb-20 md:px-10 md:pb-24 lg:px-16">
         <span className="hero-eyebrow mb-6 inline-flex items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.3em] text-gold">
           <span className="h-px w-10 bg-gold" />
-          India&rsquo;s First Early College Access Program
+          India&rsquo;s First Early College Access Program &mdash; Open Now
         </span>
 
-        <h1 className="max-w-4xl font-serif text-[clamp(2.75rem,7.5vw,6rem)] leading-[0.98] text-balance">
-          <span className="hero-line block overflow-hidden">Your Future</span>
-          <span className="hero-line block overflow-hidden text-gold">Starts Earlier.</span>
+        <h1 className="max-w-4xl font-serif text-[clamp(2.4rem,6.4vw,5.25rem)] leading-[1.02] text-balance">
+          <span className="hero-line block overflow-hidden">Your Child Can Earn US College Credits</span>
+          <span className="hero-line block overflow-hidden text-gold">While Still in School.</span>
         </h1>
 
         <p className="hero-sub mt-8 max-w-lg text-[18px] leading-relaxed text-ivory/80">
-          Earn a US-accredited transcript while you&rsquo;re still in school. Go Early
-          College is an institution, not a coaching centre &mdash; built to give
-          ambitious students access to university-level opportunity before university
-          begins.
+          Any board. Any city. 350+ American university partners. No school transfer.
+          No disruption. Just a credential that changes where your child ends up.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <span className="hero-cta">
-            <Button href="/apply">Apply Now</Button>
+            <Button href="/assessment">Take the Free Assessment</Button>
           </span>
           <span className="hero-cta">
             <Button href="/program" variant="outline" className="border-ivory/40 text-ivory hover:bg-ivory/10">
-              Explore the Program
+              Watch How It Works
             </Button>
           </span>
         </div>
+
+        <p className="hero-cta mt-5 text-[13.5px] text-ivory/55">
+          Free. 15 minutes. Personalised report delivered to your inbox in 60 seconds.
+        </p>
       </div>
 
       <div className="hero-scroll absolute bottom-8 right-6 z-10 hidden flex-col items-center gap-3 md:right-10 lg:right-16 md:flex">

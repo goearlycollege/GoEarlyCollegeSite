@@ -20,5 +20,7 @@ export const FOOTER_LINKS = {
     { label: "Success Stories", href: "/success-stories" },
     { label: "Contact", href: "/contact" },
     { label: "Apply", href: "/apply" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Pricing", href: "/pricing" },
   ],
 } as const;

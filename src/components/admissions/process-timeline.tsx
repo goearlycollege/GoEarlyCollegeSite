@@ -10,25 +10,25 @@ const STEPS = [
     title: "Submit Your Application",
     detail:
       "Complete the online application with academic history, a short statement, and school details. Takes about fifteen minutes.",
-    meta: "Step 01",
+    meta: "Day 1",
   },
   {
     title: "Academic Assessment",
     detail:
       "Our academics team reviews your transcript and application to confirm readiness for college-level coursework.",
-    meta: "Step 02",
+    meta: "Days 2–3",
   },
   {
     title: "Admissions Interview",
     detail:
       "A conversational interview with an admissions counselor — no trick questions, just a real discussion about your goals.",
-    meta: "Step 03",
+    meta: "Days 3–5",
   },
   {
     title: "Offer & Enrollment",
     detail:
       "Admitted students receive an official offer along with tuition, aid, and enrollment details to confirm their seat.",
-    meta: "Step 04",
+    meta: "Days 5–10",
   },
   {
     title: "Orientation & Onboarding",

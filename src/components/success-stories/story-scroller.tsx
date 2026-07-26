@@ -53,6 +53,12 @@ export function StoryScroller() {
               <blockquote className="font-serif text-lg italic leading-relaxed text-ivory/90">
                 &ldquo;{story.quote}&rdquo;
               </blockquote>
+              <div className="mt-1 border-t border-ivory/10 pt-4">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ivory/45">
+                  What made the difference
+                </p>
+                <p className="mt-2 text-[14px] leading-relaxed text-ivory/70">{story.whatMadeTheDifference}</p>
+              </div>
             </div>
           </article>
         ))}

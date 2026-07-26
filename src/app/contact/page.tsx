@@ -1,22 +1,25 @@
-import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/section-heading";
 import { Reveal } from "@/components/ui/reveal";
 import { Button } from "@/components/ui/button";
 import { EnquiryForm } from "@/components/contact/enquiry-form";
+import { FinalCta } from "@/components/final-cta";
 import { IMAGES } from "@/lib/images";
+import { buildMetadata } from "@/lib/seo";
+import { WHATSAPP_DISPLAY_NUMBER, WHATSAPP_MESSAGE, whatsappHref } from "@/lib/whatsapp";
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: "Contact",
   description:
     "Get in touch with Go Early College — book a consultation, ask a question, or reach our admissions team directly.",
-};
+  path: "/contact",
+});
 
 const CONTACT_DETAILS = [
   {
-    label: "Admissions Office",
-    value: "Bengaluru, India",
+    label: "Address",
+    value: "American World School, Perungudi, OMR Road, Chennai, Tamil Nadu, India",
   },
   {
     label: "Email",
@@ -24,11 +27,15 @@ const CONTACT_DETAILS = [
   },
   {
     label: "Phone",
-    value: "+91 80000 00000",
+    value: WHATSAPP_DISPLAY_NUMBER,
   },
   {
     label: "Office Hours",
-    value: "Mon–Sat, 9:00 AM – 6:00 PM IST",
+    value: "Monday to Saturday, 9:00 AM to 6:00 PM IST",
+  },
+  {
+    label: "Languages",
+    value: "Tamil, Telugu, Hindi, Kannada, English",
   },
 ];
 
@@ -43,8 +50,8 @@ export default function ContactPage() {
     <>
       <PageHero
         eyebrow="Contact"
-        title="Let's talk about your future."
-        description="Whether you have a question or you're ready to begin, our admissions team is here to help."
+        title="Let&rsquo;s talk about your child&rsquo;s future."
+        description="Whether you have a question, want to understand the program in more detail, or are ready to begin — our admissions team is here. Every enquiry receives a personal response within one business day."
         image={IMAGES.studentsGroupLaptop}
         imageAlt="A small group of students gathered around a laptop, smiling together."
         height="medium"
@@ -64,14 +71,18 @@ export default function ContactPage() {
             </Reveal>
 
             <div className="flex flex-col gap-10">
-              <Reveal className="rounded-sm border border-charcoal/10 bg-cream p-8">
-                <Eyebrow>Book a Consultation</Eyebrow>
-                <p className="mt-4 text-[15px] leading-relaxed text-charcoal-soft/80">
-                  Prefer to talk it through? Request a free fifteen-minute call with
-                  our admissions team — no obligation, just answers.
+              {/* WhatsApp Us Directly */}
+              <Reveal className="rounded-sm border border-whatsapp/30 bg-whatsapp/[0.06] p-8">
+                <Eyebrow>WhatsApp Us Directly</Eyebrow>
+                <h3 className="mt-4 font-serif text-xl text-charcoal">The fastest way to reach us.</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-charcoal-soft/80">
+                  Most Indian families find it easier to send a WhatsApp message than
+                  fill in a form. Message us directly — our admissions team responds
+                  within a few hours during office hours.
                 </p>
-                <Button href="#enquiry-form" variant="dark" className="mt-6 w-fit">
-                  Request a Call Back
+                <p className="mt-3 text-[13px] text-charcoal-soft/55">{WHATSAPP_DISPLAY_NUMBER}</p>
+                <Button href={whatsappHref(WHATSAPP_MESSAGE)} variant="whatsapp" className="mt-5 w-fit">
+                  Message us on WhatsApp →
                 </Button>
               </Reveal>
 
@@ -111,14 +122,25 @@ export default function ContactPage() {
       <section className="border-t border-charcoal/10 bg-cream">
         <Reveal className="relative h-[420px] w-full grayscale-[15%]">
           <iframe
-            title="Map showing Bengaluru, India"
-            src="https://maps.google.com/maps?q=Bengaluru,India&z=11&output=embed"
+            title="Map showing American World School, Perungudi, OMR Road, Chennai"
+            src="https://maps.google.com/maps?q=Perungudi,OMR+Road,Chennai,India&z=13&output=embed"
             className="h-full w-full border-0"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
         </Reveal>
       </section>
+
+      <FinalCta
+        eyebrow="Not Ready to Apply Yet?"
+        title="Start with the free assessment. No commitment required."
+        description="The free College Readiness Assessment takes 15 minutes. Your child's personalised readiness report is delivered in 60 seconds. A counsellor contacts you only if you ask us to."
+        primaryLabel="Take the Free Assessment"
+        primaryHref="/assessment"
+        secondaryLabel="Apply Now"
+        secondaryHref="/apply"
+        secondaryVariant="secondary"
+      />
     </>
   );
 }

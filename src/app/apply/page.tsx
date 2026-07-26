@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { ApplicationFlow } from "@/components/apply/application-flow";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: "Apply",
   description: "Start your Go Early College application — five simple steps, autosaved as you go.",
-};
+  path: "/apply",
+});
 
 export default function ApplyPage() {
   return (
@@ -16,11 +17,16 @@ export default function ApplyPage() {
             Application
           </span>
           <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] text-charcoal">
-            Start earlier. Go further.
+            Start Earlier. Go Further.
           </h1>
           <p className="max-w-md text-[15px] leading-relaxed text-charcoal-soft/70">
-            Five short steps. Your progress is saved automatically, so you can pick up
-            right where you left off.
+            Five short steps. Your progress is saved automatically at every point —
+            begin now and return whenever you are ready. Most students complete the
+            full application in under 15 minutes.
+          </p>
+          <p className="max-w-md text-[13.5px] leading-relaxed text-crimson">
+            Applications for the current cohort close on [DATE]. Secure your
+            child&rsquo;s place before enrolment fills.
           </p>
         </div>
         <ApplicationFlow />

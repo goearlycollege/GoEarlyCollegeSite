@@ -2,14 +2,16 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { CATEGORIES, RESOURCES, type Resource } from "@/lib/resources-data";
 
 function ResourceCard({ resource, large = false }: { resource: Resource; large?: boolean }) {
   return (
-    <article
+    <Link
+      href={`/blog/${resource.slug}`}
       className={cn(
-        "group mb-6 break-inside-avoid overflow-hidden rounded-sm border border-charcoal/10 bg-cream transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-20px_rgba(29,31,35,0.25)]"
+        "group mb-6 block break-inside-avoid overflow-hidden rounded-sm border border-charcoal/10 bg-cream transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-20px_rgba(29,31,35,0.25)]"
       )}
     >
       <div className={cn("relative overflow-hidden", large ? "aspect-[16/10]" : "aspect-[4/3]")}>
@@ -37,7 +39,7 @@ function ResourceCard({ resource, large = false }: { resource: Resource; large?:
           <span className="transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
         </span>
       </div>
-    </article>
+    </Link>
   );
 }
 

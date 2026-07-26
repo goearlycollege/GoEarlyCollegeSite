@@ -1,57 +1,58 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { trackContactFormSubmit } from "@/lib/analytics";
 
-const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12", "Parent / Guardian"];
+const I_AM_A = [
+  "Grade 8",
+  "Grade 9",
+  "Grade 10",
+  "Grade 11",
+  "Grade 12",
+  "Parent or Guardian",
+  "School Representative",
+];
 
 const inputClass =
   "w-full rounded-sm border border-charcoal/15 bg-ivory px-4 py-3.5 text-[15px] text-charcoal placeholder:text-charcoal-soft/40 transition-colors focus:border-crimson focus:outline-none";
+const labelClass = "text-[12.5px] font-semibold uppercase tracking-[0.08em] text-charcoal-soft/60";
 
 export function EnquiryForm() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+  const router = useRouter();
+  const [status, setStatus] = useState<"idle" | "submitting">("idle");
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [whatsappSameAsPhone, setWhatsappSameAsPhone] = useState(true);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("submitting");
-    window.setTimeout(() => setStatus("success"), 900);
-  }
-
-  if (status === "success") {
-    return (
-      <div className="flex flex-col items-start gap-4 rounded-sm border border-gold/30 bg-gold-tint/40 p-8">
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-crimson text-ivory">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
-            <path d="m5 13 4 4L19 7" />
-          </svg>
-        </span>
-        <h3 className="font-serif text-2xl text-charcoal">Thank you — we&rsquo;ll be in touch.</h3>
-        <p className="text-[15px] leading-relaxed text-charcoal-soft/80">
-          A member of our admissions team will respond within one business day. In the
-          meantime, feel free to explore the program or start your application.
-        </p>
-      </div>
-    );
+    trackContactFormSubmit();
+    window.setTimeout(() => {
+      router.push("/thank-you?type=contact");
+    }, 700);
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5" id="enquiry-form">
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-[12.5px] font-semibold uppercase tracking-[0.08em] text-charcoal-soft/60">
+          <label htmlFor="name" className={labelClass}>
             Full Name
           </label>
           <input id="name" name="name" type="text" required placeholder="Your name" className={inputClass} />
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="grade" className="text-[12.5px] font-semibold uppercase tracking-[0.08em] text-charcoal-soft/60">
+          <label htmlFor="grade" className={labelClass}>
             I am a...
           </label>
           <select id="grade" name="grade" required defaultValue="" className={inputClass}>
             <option value="" disabled>
               Select one
             </option>
-            {GRADES.map((g) => (
+            {I_AM_A.map((g) => (
               <option key={g} value={g}>
                 {g}
               </option>
@@ -62,35 +63,87 @@ export function EnquiryForm() {
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-[12.5px] font-semibold uppercase tracking-[0.08em] text-charcoal-soft/60">
+          <label htmlFor="email" className={labelClass}>
             Email
           </label>
           <input id="email" name="email" type="email" required placeholder="you@example.com" className={inputClass} />
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="phone" className="text-[12.5px] font-semibold uppercase tracking-[0.08em] text-charcoal-soft/60">
-            Phone
+          <label htmlFor="phone" className={labelClass}>
+            Phone Number
           </label>
-          <input id="phone" name="phone" type="tel" required placeholder="+91 00000 00000" className={inputClass} />
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            required
+            placeholder="+91 00000 00000"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={inputClass}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <label htmlFor="whatsapp" className={labelClass}>
+              WhatsApp Number
+            </label>
+            <label className="flex items-center gap-1.5 text-[12px] text-charcoal-soft/60">
+              <input
+                type="checkbox"
+                checked={whatsappSameAsPhone}
+                onChange={(e) => setWhatsappSameAsPhone(e.target.checked)}
+                className="accent-crimson"
+              />
+              Same as phone
+            </label>
+          </div>
+          <input
+            id="whatsapp"
+            name="whatsapp"
+            type="tel"
+            placeholder="+91 00000 00000"
+            disabled={whatsappSameAsPhone}
+            readOnly={whatsappSameAsPhone}
+            value={whatsappSameAsPhone ? phone : whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+            className={inputClass + " disabled:opacity-60"}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="city" className={labelClass}>
+            City
+          </label>
+          <input id="city" name="city" type="text" required placeholder="Your city" className={inputClass} />
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="message" className="text-[12.5px] font-semibold uppercase tracking-[0.08em] text-charcoal-soft/60">
+        <label htmlFor="message" className={labelClass}>
           How can we help?
         </label>
         <textarea
           id="message"
           name="message"
           rows={4}
-          placeholder="Tell us a little about your goals, or ask us anything."
+          required
+          minLength={20}
+          placeholder="Tell us a little about your goals, or ask us anything (at least 20 characters)."
           className={inputClass}
         />
       </div>
 
       <Button type="submit" disabled={status === "submitting"} className="mt-2 w-fit">
-        {status === "submitting" ? "Sending…" : "Send Enquiry"}
+        {status === "submitting" ? "Sending…" : "Send Enquiry →"}
       </Button>
+      <p className="text-[13px] leading-relaxed text-charcoal-soft/55">
+        Your details are kept strictly confidential. We will never share your
+        information with third parties. You will not be added to a marketing list
+        without your permission.
+      </p>
     </form>
   );
 }

@@ -8,21 +8,20 @@ import { IMAGES } from "@/lib/images";
 const STORIES = [
   {
     quote:
-      "I earned twelve transferable college credits before I'd even finished school. My application felt like it belonged next to students who'd had every advantage.",
+      "12 credits earned before my final school exam. My application felt like it belonged next to students who had had every advantage.",
     name: "Ananya R.",
-    detail: "Class of 2025 · Now at a top-30 US university",
+    detail: "Class of 2025, top-30 US university",
     image: IMAGES.portraitAnanya,
   },
   {
-    quote:
-      "Go Early College didn't just prepare me for admissions — it changed how I think about learning. The mentorship made the difference.",
+    quote: "The mentorship made the difference. My counsellor knew my academic profile better than I did.",
     name: "Kabir S.",
-    detail: "Class of 2024 · Computer Science major",
+    detail: "Class of 2024, top-50 liberal arts college with merit aid",
     image: IMAGES.portraitKabir,
   },
   {
     quote:
-      "As a parent, what mattered most was that this was real academic rigor, not test prep. My daughter arrived at university already thinking like a student there.",
+      "This was real academic rigour — not test prep. My daughter arrived at university already thinking like a student there.",
     name: "Meera D.",
     detail: "Parent, Bengaluru",
     image: IMAGES.portraitMeera,
@@ -36,12 +35,12 @@ export function Testimonials() {
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <SectionHeading
             tone="light"
-            eyebrow="Success Stories"
-            title="Ambition, realized earlier."
+            eyebrow="What Go Early College Students Achieve"
+            title="These students did not wait. Here is what they built."
             className="max-w-xl"
           />
           <Button href="/success-stories" variant="outline" className="border-ivory/30 text-ivory hover:bg-ivory/10">
-            Read More Stories
+            Read more student stories
           </Button>
         </div>
 

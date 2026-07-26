@@ -35,10 +35,12 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  const isApply = pathname === "/apply";
-  const solid = scrolled || menuOpen || isApply;
+  // Brief 5, Page 10 — /assessment is a standalone conversion page with no
+  // nav bar, same bare treatment as /apply.
+  const isBareHeader = pathname === "/apply" || pathname === "/assessment";
+  const solid = scrolled || menuOpen || isBareHeader;
 
-  if (isApply) {
+  if (isBareHeader) {
     return (
       <header className="fixed inset-x-0 top-0 z-50 border-b border-charcoal/10 bg-ivory/95 py-4 backdrop-blur-md">
         <div className="mx-auto flex w-full max-w-[1360px] items-center justify-between px-6 md:px-10 lg:px-16">
@@ -94,6 +96,16 @@ export default function Header() {
 
         <div className="hidden items-center gap-3 lg:flex">
           <Button
+            href="/assessment"
+            variant="outline"
+            className={cn(
+              "border-crimson px-6 py-3",
+              solid ? "text-crimson hover:bg-crimson/[0.06]" : "text-white hover:bg-white/10"
+            )}
+          >
+            Free Assessment
+          </Button>
+          <Button
             href="/apply"
             variant="primary"
             className="px-6 py-3"
@@ -102,28 +114,33 @@ export default function Header() {
           </Button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          className="relative z-10 flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
-        >
-          <span
-            className={cn(
-              "h-px w-6 transition-all duration-300",
-              solid ? "bg-charcoal" : "bg-white",
-              menuOpen && "translate-y-[3.5px] rotate-45"
-            )}
-          />
-          <span
-            className={cn(
-              "h-px w-6 transition-all duration-300",
-              solid ? "bg-charcoal" : "bg-white",
-              menuOpen && "-translate-y-[3.5px] -rotate-45"
-            )}
-          />
-        </button>
+        <div className="flex items-center gap-3 lg:hidden">
+          <Button href="/apply" variant="primary" className="px-4 py-2.5 text-[11px]">
+            Apply Now
+          </Button>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="relative z-10 flex h-10 w-10 flex-col items-center justify-center gap-1.5"
+          >
+            <span
+              className={cn(
+                "h-px w-6 transition-all duration-300",
+                solid ? "bg-charcoal" : "bg-white",
+                menuOpen && "translate-y-[3.5px] rotate-45"
+              )}
+            />
+            <span
+              className={cn(
+                "h-px w-6 transition-all duration-300",
+                solid ? "bg-charcoal" : "bg-white",
+                menuOpen && "-translate-y-[3.5px] -rotate-45"
+              )}
+            />
+          </button>
+        </div>
       </div>
       </header>
 
@@ -155,7 +172,14 @@ export default function Header() {
             </a>
           ))}
         </nav>
-        <div className="px-8 pb-10">
+        <div className="flex flex-col gap-3 px-8 pb-10">
+          <Button
+            href="/assessment"
+            variant="outline"
+            className="w-full border-crimson text-crimson hover:bg-crimson/[0.06]"
+          >
+            Free Assessment
+          </Button>
           <Button href="/apply" className="w-full">
             Apply Now
           </Button>

@@ -1,87 +1,86 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
-import { SectionHeading, Eyebrow } from "@/components/ui/section-heading";
+import { Eyebrow } from "@/components/ui/section-heading";
 import { AlternatingBlock } from "@/components/ui/alternating-block";
 import { Reveal } from "@/components/ui/reveal";
+import { Button } from "@/components/ui/button";
 import { FinalCta } from "@/components/final-cta";
 import { IMAGES } from "@/lib/images";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: "About",
+  fullTitle: "About Go Early College | The Institution Behind the Credential",
   description:
-    "Go Early College was founded on one belief: the strongest university journeys begin long before university. Learn our story, values, and mission.",
-};
+    "Go Early College was built on one belief — the strongest university journeys begin long before university. Learn our story, accreditations, mission, and team.",
+  path: "/about",
+});
 
 const TIMELINE = [
   {
-    year: "2023",
-    title: "An idea, tested",
+    year: "2021",
+    title: "An institution is founded",
     detail:
-      "Founders working in US college admissions noticed a gap: ambitious Indian students had no structured way to build a real academic profile before applying — only exam coaching.",
+      "American World School established in Chennai. WASC-accredited, UGC-equivalent. Built to give Indian students access to a legitimate US academic pathway.",
+  },
+  {
+    year: "2023",
+    title: "Go Early College takes shape",
+    detail: "Program designed in partnership with US faculty and 350+ university partners.",
   },
   {
     year: "2024",
-    title: "Go Early College opens its doors",
-    detail:
-      "The first cohort enrolls, earning US-accredited, transferable college credit while continuing at their current schools — Open Doors 2024.",
+    title: "First cohort enrols",
+    detail: "Indian school students earn transferable US college credits while continuing at their existing schools.",
   },
   {
     year: "2025",
-    title: "Accreditation & university partnerships",
-    detail:
-      "Formal transfer pathways established with accredited US institutions, giving every transcript weight in the admissions process.",
+    title: "University partnerships formalised",
+    detail: "Formal transfer pathways established across 50 US states.",
   },
   {
     year: "2026",
     title: "A growing institution",
-    detail:
-      "Go Early College expands its faculty, mentorship network, and course catalogue to serve a new generation of early cohorts nationwide.",
+    detail: "Expanded faculty, counsellor network, course catalogue, and city coverage.",
   },
 ];
 
 const VALUES = [
   {
     title: "Ambition",
-    detail: "We inspire students to aim higher and pursue extraordinary futures with confidence.",
+    detail: "We inspire students to aim higher than the standard path suggests is possible.",
   },
   {
     title: "Credibility",
-    detail: "We uphold the highest academic standards and operate with integrity, transparency, and responsibility.",
+    detail: "Every claim we make is backed by accreditation, documentation, and institutional standing.",
   },
   {
     title: "Opportunity",
-    detail: "We create access to university-level opportunity early — unlocking paths that change lives.",
+    detail: "We create access to university-level education early — for every student, on every board, in every city.",
   },
   {
     title: "Excellence",
-    detail: "We pursue excellence in academics, systems, and experiences — every single day.",
+    detail: "We pursue the highest academic standards every day, in every course, with every student.",
   },
   {
     title: "Optimism",
-    detail: "We believe in every student's potential and remain positive about what's possible.",
+    detail: "We believe in every student's potential. The evidence, consistently, confirms it.",
   },
 ];
 
 const LEADERSHIP = [
   {
-    name: "Dr. Arjun Mehta",
-    role: "Founder & Chief Executive",
-    bio: "Former US admissions officer turned institution-builder, focused on closing the access gap for Indian students.",
-    image: IMAGES.portraitFounder,
-  },
-  {
-    name: "Priya Nair",
-    role: "Head of Academics",
-    bio: "Designs the accredited curriculum in partnership with US faculty, ensuring rigor at every level.",
+    name: "Mohanalakshmi Rajakumar",
+    role: "Founder and Chief Executive, American World School",
+    bio: "Educator, entrepreneur, Women Champion Award (British Parliament). Creator of the Kidspreneur curriculum under Singapore MOE. Founder of Asia's first entrepreneurial school.",
     image: IMAGES.portraitAcademicsHead,
   },
   {
-    name: "Rohan Kapoor",
-    role: "Director of Admissions",
-    bio: "Guides families through eligibility, enrollment, and the transfer-credit process from day one.",
-    image: IMAGES.portraitAdmissionsHead,
+    name: "Paul Montague",
+    role: "Chief Executive Officer, Go Early College",
+    bio: "Partnership Director with experience in dual diploma programs, early college access, and international school networks across South Asia, Southeast Asia, Middle East, Africa, and Europe.",
+    image: IMAGES.portraitFounder,
   },
 ];
 
@@ -90,13 +89,12 @@ export default function AboutPage() {
     <>
       <PageHero
         eyebrow="About Go Early College"
-        title="Built on a simple belief."
-        description="The strongest university journeys begin long before university. We exist to give ambitious students that head start — as an institution, not a shortcut."
+        title="Built on a belief that the system needed to change."
+        description="India sends more students to US universities than any country in the world — yet the system gives those students almost nothing to build a real academic profile before they apply. Go Early College was built to change that. Not as a platform, not as a coaching centre — as an institution."
         image={IMAGES.heroLibrary}
         imageAlt="A grand university library reading room bathed in warm afternoon light."
       />
 
-      {/* Origin story — alternating blocks */}
       <AlternatingBlock
         index={1}
         eyebrow="Why We Started"
@@ -105,16 +103,24 @@ export default function AboutPage() {
         imageAlt="A teacher works with a classroom of engaged students."
       >
         <p>
-          India sends more students to US universities than any other country in the
-          world — yet almost nothing exists to help ambitious students build a real
-          academic profile before they apply. What&rsquo;s available trains for exams,
-          not for university-level thinking.
+          When families researched ways to give their children a genuine head start for
+          US university applications, they found coaching for exams, consultants
+          promising admissions, and online platforms selling certificates that no
+          university had heard of. Nobody had built the real thing — a WASC-accredited
+          institution in India that could issue a legitimate US academic transcript to
+          a CBSE, ICSE, or State Board student, and give that student access to real,
+          credit-bearing university courses while they were still in school. So we
+          built it. American World School — WASC-accredited, UGC-equivalent, founded in
+          Chennai — is the institutional backbone of everything Go Early College
+          offers.
         </p>
-        <p className="mt-4">
-          We created a new pathway: one that brings university-level opportunity to
-          students <em className="font-serif italic text-crimson">before</em> they leave
-          school, not after.
-        </p>
+        <Button
+          href="/program"
+          variant="ghost"
+          className="mt-5 w-fit px-0 py-0 normal-case tracking-normal text-[15px] font-semibold text-crimson hover:bg-transparent hover:underline"
+        >
+          See how the program works →
+        </Button>
       </AlternatingBlock>
 
       <AlternatingBlock
@@ -126,14 +132,17 @@ export default function AboutPage() {
         reverse
       >
         <p>
-          Go Early College helps students earn a US-accredited transcript and build a
-          stronger academic future while remaining enrolled in their current school.
-          There is no relocation, no gap year, and no compromise on the education
-          already underway.
+          The moment American World School issued its first WASC-accredited US
+          transcript to an Indian school student, something changed that had never
+          changed before. For the first time, a student enrolled in a CBSE school in
+          Chennai could have a legitimate US academic record — with courses graded by
+          American faculty, credits transferable to universities across all 50 states,
+          and a GPA that admissions committees could evaluate. Not preparation for
+          university. Actual, completed, verifiable academic history at college level.
         </p>
-        <p className="mt-4">
-          By the time our students apply to university, they have already done
-          university-level work &mdash; and their transcripts prove it.
+        <p className="mt-5 border-l-2 border-gold pl-5 font-serif text-lg italic text-crimson">
+          &ldquo;By the time our students apply, they have already done university-level
+          work. Their transcripts prove it.&rdquo;
         </p>
       </AlternatingBlock>
 
@@ -145,24 +154,25 @@ export default function AboutPage() {
         imageAlt="Two students collaborate closely at a computer."
       >
         <p>
-          We look for curiosity, discipline, and a willingness to be challenged &mdash;
-          not just a transcript full of top marks. Our students come from schools
-          across India, in every board and stream, united by the ambition to go
-          further.
+          We look for curiosity, discipline, and a genuine willingness to be
+          challenged. Our students come from CBSE, ICSE, State Board, IB, and IGCSE
+          schools across India. Grade 8 through Grade 12. Every city. Every board.
+          United by one thing — the ambition to go further than the standard path
+          allows.
         </p>
+        <Button
+          href="/admissions"
+          variant="ghost"
+          className="mt-5 w-fit px-0 py-0 normal-case tracking-normal text-[15px] font-semibold text-crimson hover:bg-transparent hover:underline"
+        >
+          Check eligibility — it takes two minutes →
+        </Button>
       </AlternatingBlock>
 
       {/* Timeline */}
       <section className="bg-cream py-24 md:py-32">
         <Container>
-          <SectionHeading
-            align="center"
-            eyebrow="Our Story So Far"
-            title="Rooted in tradition. Designed for tomorrow."
-            className="mx-auto max-w-2xl"
-          />
-
-          <Reveal as="div" stagger className="relative mt-20 flex flex-col gap-0">
+          <Reveal as="div" stagger className="relative flex flex-col gap-0">
             <div className="absolute left-[15px] top-2 bottom-2 w-px bg-charcoal/10 md:left-1/2" />
             {TIMELINE.map((item, i) => (
               <div
@@ -189,38 +199,55 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* Mission & Vision */}
+      {/* Accreditation */}
       <section className="bg-crimson py-24 text-ivory md:py-28">
         <Container>
-          <div className="grid grid-cols-1 gap-14 md:grid-cols-2">
-            <Reveal className="flex flex-col gap-5 border-t border-ivory/20 pt-8">
-              <Eyebrow tone="gold">Our Vision</Eyebrow>
-              <p className="font-serif text-2xl leading-snug md:text-3xl">
-                To become the institution every ambitious Indian student touches before
-                entering an American university.
+          <Reveal className="flex flex-col gap-10">
+            <h2 className="max-w-2xl font-serif text-[clamp(2rem,4vw,3.25rem)] leading-[1.1] text-balance">
+              The accreditation that makes everything else possible.
+            </h2>
+            <div className="grid grid-cols-1 gap-10 border-t border-ivory/20 pt-8 md:grid-cols-2">
+              <div>
+                <Eyebrow tone="gold">WASC</Eyebrow>
+                <p className="mt-4 text-[16px] leading-relaxed text-ivory/85">
+                  American World School holds direct WASC accreditation — Western
+                  Association of Schools and Colleges. The standard American
+                  universities use to evaluate transfer credit. Without this, the
+                  transcript means nothing. With it, every credit opens doors.
+                </p>
+              </div>
+              <div>
+                <Eyebrow tone="gold">UGC Equivalent</Eyebrow>
+                <p className="mt-4 text-[16px] leading-relaxed text-ivory/85">
+                  The American High School Diploma issued by AWS is formally recognised
+                  by India&rsquo;s University Grants Commission as equivalent to an
+                  Indian Higher Secondary Certificate.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col items-start gap-2">
+              <button
+                type="button"
+                aria-disabled="true"
+                title="Certificates pending upload from AWS — see Section 10.5"
+                className="inline-flex cursor-not-allowed items-center gap-2 rounded-sm border border-ivory/35 px-7 py-3.5 text-[13px] font-semibold uppercase tracking-[0.12em] text-ivory/50"
+              >
+                Download our accreditation certificates →
+              </button>
+              <p className="text-[13px] text-ivory/50">
+                Real documents. Real institutions. Fully verifiable.
               </p>
-            </Reveal>
-            <Reveal className="flex flex-col gap-5 border-t border-ivory/20 pt-8">
-              <Eyebrow tone="gold">Our Mission</Eyebrow>
-              <p className="font-serif text-2xl leading-snug md:text-3xl">
-                We help students earn a US-accredited transcript and build a stronger
-                academic future &mdash; while remaining enrolled in their current
-                school.
-              </p>
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
         </Container>
       </section>
 
       {/* Values */}
       <section className="bg-ivory py-24 md:py-32">
         <Container>
-          <SectionHeading
-            align="center"
-            eyebrow="Our Values"
-            title="Our values shape every decision, every action, every student journey."
-            className="mx-auto max-w-2xl"
-          />
+          <h2 className="mx-auto max-w-2xl text-center font-serif text-[clamp(2rem,4vw,3.25rem)] leading-[1.1] text-balance text-charcoal">
+            Five values. Every student journey.
+          </h2>
           <Reveal
             as="div"
             stagger
@@ -240,12 +267,10 @@ export default function AboutPage() {
       {/* Leadership */}
       <section className="border-t border-charcoal/10 bg-cream py-24 md:py-32">
         <Container>
-          <SectionHeading
-            eyebrow="Institutional Philosophy"
-            title="Led by educators, not marketers."
-            description="Our leadership team brings direct experience from US admissions offices and higher education — building an institution around real academic rigor."
-          />
-          <Reveal as="div" stagger className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3">
+          <h2 className="max-w-2xl font-serif text-[clamp(2rem,4vw,3.25rem)] leading-[1.1] text-balance text-charcoal">
+            Led by educators and institution-builders — not marketers.
+          </h2>
+          <Reveal as="div" stagger className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2">
             {LEADERSHIP.map((person) => (
               <div key={person.name} className="group flex flex-col gap-5">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
@@ -254,7 +279,7 @@ export default function AboutPage() {
                     alt={`Portrait of ${person.name}, ${person.role}`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(min-width: 640px) 30vw, 90vw"
+                    sizes="(min-width: 640px) 45vw, 90vw"
                   />
                 </div>
                 <div>
@@ -267,15 +292,27 @@ export default function AboutPage() {
               </div>
             ))}
           </Reveal>
+          <Reveal className="mt-14 max-w-2xl border-t border-charcoal/10 pt-10">
+            <p className="text-[16px] leading-relaxed text-charcoal-soft/85">
+              <span className="font-serif text-lg text-crimson">Counselling Team.</span>{" "}
+              Every Go Early College counsellor is a trained educator fluent in Tamil,
+              Telugu, Hindi, Kannada, and English — assigned 1:1 to every student from
+              enrolment through university application.
+            </p>
+          </Reveal>
         </Container>
       </section>
 
       <FinalCta
-        eyebrow="Join the Institution"
-        title="Your story could start here."
-        description="Meet the team, tour the curriculum, and see why families are choosing to start earlier."
-        secondaryLabel="Meet the Program"
-        secondaryHref="/program"
+        title="The institution is built. The pathway is open. Your child's moment is now."
+        primaryLabel="Take the Free Assessment"
+        primaryHref="/assessment"
+        secondaryLabel="Apply Now"
+        secondaryHref="/apply"
+        secondaryVariant="secondary"
+        tertiaryLabel="Talk to our admissions team"
+        tertiaryHref="/contact"
+        reassurance="Free. No commitment. Available in Tamil, Telugu, Hindi, Kannada, and English."
       />
     </>
   );

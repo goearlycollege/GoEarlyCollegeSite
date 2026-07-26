@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -7,12 +6,14 @@ import { Accordion } from "@/components/ui/accordion";
 import { Stat } from "@/components/ui/stat";
 import { FinalCta } from "@/components/final-cta";
 import { IMAGES } from "@/lib/images";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: "Universities & Recognition",
   description:
     "Learn how Go Early College's accredited transcript is recognized: accreditation standards, transfer pathways, and where students go next.",
-};
+  path: "/universities",
+});
 
 const RECOGNITION = [
   { label: "Public Flagship Universities" },
@@ -46,6 +47,28 @@ const COMPARISON = [
   },
 ];
 
+const AP_IB_MOOC_GEC = [
+  {
+    label: "AP Courses",
+    detail:
+      "Demonstrate readiness for college-level work. Signal: ‘This student could probably do university work.’ Not actual college credit.",
+  },
+  {
+    label: "IB Curriculum",
+    detail: "International curriculum demonstrating global academic exposure. Signal: School-level differentiation. Not transferable US college credit.",
+  },
+  {
+    label: "MOOC Certificate",
+    detail:
+      "Completion record from online platform. Not graded by accredited faculty. Not transferable to university credit. Admissions committees treat as optional extras.",
+  },
+  {
+    label: "Go Early College",
+    detail:
+      "Actual, completed, transferable college credit — graded by US faculty, on a WASC-accredited transcript. Signal: ‘This student has already done university-level work.’ The only option in this comparison that is actual academic history.",
+  },
+];
+
 const FAQ = [
   {
     title: "Is Go Early College accredited?",
@@ -67,6 +90,11 @@ const FAQ = [
     content:
       "AP and IB demonstrate readiness for college-level work. Go Early College coursework is actual, transferable college credit — a step beyond readiness into real completed academic history.",
   },
+  {
+    title: "How is this different from a MOOC or online certificate?",
+    content:
+      "A MOOC certificate is a completion record from an online platform — not graded by accredited faculty, not transferable to university credit. Admissions committees treat it as an optional extra. Go Early College coursework is actual, completed, transferable college credit — graded by US faculty, on a WASC-accredited transcript.",
+  },
 ];
 
 export default function UniversitiesPage() {
@@ -80,9 +108,10 @@ export default function UniversitiesPage() {
         imageAlt="A brick university building fronted by a wide green lawn."
       >
         <div className="flex flex-wrap gap-10">
-          <Stat value="350+" label="US Universities Welcome Indian Talent" />
-          <Stat value="50" label="States of Recognition" />
-          <Stat value="#1" label="India, Source of Int'l Students" />
+          <Stat value="350+" label="University Partners" />
+          <Stat value="50" label="States" />
+          <Stat value="WASC" label="Accredited" />
+          <Stat value="UGC" label="Equivalent" />
         </div>
       </PageHero>
 
@@ -115,6 +144,16 @@ export default function UniversitiesPage() {
               </div>
             ))}
           </Reveal>
+          <div className="mt-10 flex flex-col items-start gap-2">
+            <button
+              type="button"
+              aria-disabled="true"
+              title="Certificate pending upload from AWS — see Section 10.5"
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-sm border border-charcoal/20 px-7 py-3.5 text-[13px] font-semibold uppercase tracking-[0.12em] text-charcoal-soft/40"
+            >
+              Download the WASC accreditation certificate →
+            </button>
+          </div>
         </Container>
       </section>
 
@@ -150,6 +189,34 @@ export default function UniversitiesPage() {
             Categories reflect institution types where regionally accredited transfer
             credit is commonly recognized. Individual transfer policy varies by
             university — our admissions team can confirm specifics for any school.
+          </p>
+        </Container>
+      </section>
+
+      {/* AP vs IB vs MOOC vs GEC */}
+      <section className="bg-crimson py-24 text-ivory md:py-32">
+        <Container>
+          <SectionHeading
+            tone="light"
+            align="center"
+            title="AP vs IB vs MOOC vs Go Early College."
+            className="mx-auto max-w-2xl"
+          />
+          <Reveal
+            as="div"
+            stagger
+            className="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-ivory/15 bg-ivory/15 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {AP_IB_MOOC_GEC.map((col) => (
+              <div key={col.label} className="flex flex-col gap-3 bg-crimson p-7">
+                <h3 className="font-serif text-lg text-gold">{col.label}</h3>
+                <p className="text-[14px] leading-relaxed text-ivory/80">{col.detail}</p>
+              </div>
+            ))}
+          </Reveal>
+          <p className="mx-auto mt-12 max-w-2xl text-center font-serif text-lg italic text-ivory/90">
+            &ldquo;An AP score says: this student could probably do college work. A Go
+            Early College transcript says: this student has already done it.&rdquo;
           </p>
         </Container>
       </section>
@@ -199,7 +266,14 @@ export default function UniversitiesPage() {
         </Container>
       </section>
 
-      <FinalCta secondaryLabel="View Admissions Steps" secondaryHref="/admissions" />
+      <FinalCta
+        eyebrow="Applications Are Open"
+        primaryLabel="Take the Free Assessment"
+        primaryHref="/assessment"
+        secondaryLabel="View Admissions Steps"
+        secondaryHref="/admissions"
+        reassurance
+      />
     </>
   );
 }

@@ -1,103 +1,92 @@
-import type { Metadata } from "next";
-import Image from "next/image";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
-import { SectionHeading, Eyebrow } from "@/components/ui/section-heading";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { Reveal } from "@/components/ui/reveal";
 import { Accordion } from "@/components/ui/accordion";
 import { Stat } from "@/components/ui/stat";
+import { Button } from "@/components/ui/button";
 import { ProcessSteps } from "@/components/program/process-steps";
+import { ThreeHours } from "@/components/program/three-hours";
+import { PsychometricAssessment } from "@/components/program/psychometric-assessment";
+import { CreditPathway } from "@/components/program/credit-pathway";
 import { FinalCta } from "@/components/final-cta";
 import { IMAGES } from "@/lib/images";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: "Program",
+  fullTitle: "The Program | Go Early College — US Credits While Still in School",
   description:
-    "See how Go Early College works, from enrollment to university: live faculty-led courses, an accredited curriculum, and 1:1 mentorship.",
-};
-
-const LEARNING_MODEL = [
-  {
-    title: "Live, Faculty-Led Classes",
-    detail:
-      "Small cohorts meet in real time with instructors trained in US higher-education pedagogy — not pre-recorded lectures.",
-  },
-  {
-    title: "Flexible Around School",
-    detail:
-      "Coursework is scheduled around your existing school day, so nothing about your current education has to change.",
-  },
-  {
-    title: "Rigor With Support",
-    detail:
-      "University-level expectations, paired with structured mentorship so no student is left to navigate it alone.",
-  },
-];
+    "How Go Early College works — accredited courses earning real US college credits, 1:1 counselling, psychometric assessment, and a credit pathway from first course to Associate Degree and Bachelor's Degree.",
+  path: "/program",
+});
 
 const CURRICULUM: { title: string; meta: string; content: string }[] = [
   {
     title: "Foundations of Academic Writing",
     meta: "3 Credits",
-    content:
-      "College-level composition and argumentation, taught in the seminar style used at US universities. Builds the writing foundation every discipline depends on.",
+    content: "College-level composition and argumentation. Recommended as a first course for all students.",
   },
   {
     title: "Introduction to Computer Science",
     meta: "4 Credits",
-    content:
-      "Programming fundamentals, computational thinking, and applied problem-solving — a common first course for STEM-track students.",
+    content: "Programming fundamentals and computational thinking. Standard first course for STEM pathways.",
   },
   {
     title: "Microeconomics",
     meta: "3 Credits",
-    content:
-      "Core economic reasoning: markets, incentives, and decision-making, taught with real-world case studies.",
+    content: "Core economic reasoning with real-world case studies. Recommended for business and economics pathways.",
   },
   {
-    title: "Statistics & Data Reasoning",
+    title: "Statistics and Data Reasoning",
     meta: "3 Credits",
-    content:
-      "Quantitative literacy for every field, from experimental design to interpreting real datasets.",
+    content: "Quantitative literacy transferable to science, business, and social science programs.",
   },
   {
     title: "Global History Seminar",
     meta: "3 Credits",
-    content:
-      "A discussion-based survey of global history, developing the analytical and research skills expected in college humanities.",
+    content: "Discussion-based survey developing analytical and research skills for humanities programs.",
   },
   {
-    title: "College Success & Research Methods",
+    title: "Introduction to Psychology",
+    meta: "3 Credits",
+    content: "One of the most broadly transferable introductory courses in the US university system.",
+  },
+  {
+    title: "Business Communication",
+    meta: "3 Credits",
+    content: "Professional writing and communication for business and management degree pathways.",
+  },
+  {
+    title: "College Success and Research Methods",
     meta: "2 Credits",
-    content:
-      "Time management, research design, and academic strategy — the invisible curriculum that determines who thrives in university.",
+    content: "Time management, research design, and academic strategy.",
   },
 ];
 
 const FAQ = [
   {
-    title: "Do I need to leave my current school?",
+    title: "Does my child have to leave their current school?",
     content:
-      "No. Go Early College runs alongside your existing education. Classes are scheduled so you can continue at your current school without disruption.",
+      "No. Not for a single day. Same school. Same board. Same teachers. Same exams. Nothing about their existing education changes.",
   },
   {
-    title: "How much time does the program require?",
+    title: "How much time does this actually add?",
     content:
-      "Most students commit 6–8 hours per week, including live class time, coursework, and mentorship sessions.",
+      "3 to 5 hours per week per course. Online. Self-paced. Most students settle into the rhythm within two weeks of starting.",
   },
   {
-    title: "Will the credits actually transfer?",
+    title: "Will the credits transfer to the universities we are targeting?",
     content:
-      "Yes. Coursework is US-accredited and designed for transfer. Our admissions team can help confirm transfer policy for any specific university.",
+      "Our credits are regionally accredited. Our admissions team confirms transfer policy for every university on your child's target list before a single course is recommended.",
   },
   {
-    title: "Who teaches the courses?",
-    content:
-      "Faculty with experience teaching at the college level in the United States, supported by teaching assistants who work directly with each cohort.",
+    title: "What if my child finds it too demanding?",
+    content: "The counsellor monitors workload proactively and adjusts the course load before it becomes a problem.",
   },
   {
-    title: "What grade levels are eligible?",
-    content:
-      "Students typically join in grades 10–12, though strong applicants in grade 9 are considered on a case-by-case basis.",
+    title: "Can a student in Grade 8 or 9 join?",
+    content: "Yes. We accept students from Grade 8 through Grade 12. A student who starts in Grade 8 could have an Associate Degree by Grade 12.",
   },
 ];
 
@@ -107,118 +96,70 @@ export default function ProgramPage() {
       <PageHero
         eyebrow="The Program"
         title="How Go Early College works."
-        description="A structured pathway from enrollment to university — live faculty-led courses, an accredited curriculum, and mentorship built around your ambition."
+        description="A structured pathway from enrolment to university — accredited courses earning real US college credits, a dedicated counsellor from day one, and a model built to fit around the school life already underway."
         image={IMAGES.lectureHall}
         imageAlt="An empty lecture hall with tiered rows of seats, lit by warm afternoon light."
       >
         <div className="flex flex-wrap gap-10">
-          <Stat value="9-12" label="Eligible Grade Levels" />
-          <Stat value="6-8 hrs" label="Weekly Commitment" />
-          <Stat value="1:1" label="Dedicated Mentorship" />
+          <Stat value="Grade 8–12" label="Eligible Grade Levels" />
+          <Stat value="3–5 hrs" label="Weekly Commitment per Course" />
+          <Stat value="3–4 Credits" label="Earned per Course Completed" />
+          <Stat value="1:1" label="Dedicated Academic Counsellor" />
         </div>
+        <Button href="#curriculum" variant="outline" className="mt-8 w-fit border-ivory/40 text-ivory hover:bg-ivory/10">
+          See the full course catalogue →
+        </Button>
       </PageHero>
+
+      <ThreeHours />
 
       <ProcessSteps />
 
-      {/* Learning model */}
-      <section className="bg-cream py-24 md:py-32">
-        <Container>
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-            <Reveal className="relative aspect-[4/5] overflow-hidden rounded-sm">
-              <Image
-                src={IMAGES.classroomModern}
-                alt="An empty modern classroom set up for live, screen-based instruction."
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 40vw, 90vw"
-              />
-            </Reveal>
-            <div className="flex flex-col gap-10">
-              <SectionHeading
-                eyebrow="Learning Model"
-                title="University rigor, built around real school life."
-                description="Every element of the model is designed so students can pursue university-level work without sacrificing the education already underway."
-              />
-              <Reveal as="div" stagger className="flex flex-col gap-8">
-                {LEARNING_MODEL.map((item) => (
-                  <div key={item.title} className="flex gap-5 border-t border-charcoal/10 pt-6">
-                    <span className="h-px w-8 shrink-0 translate-y-3 bg-gold" />
-                    <div>
-                      <h3 className="font-serif text-lg text-charcoal">{item.title}</h3>
-                      <p className="mt-2 text-[15px] leading-relaxed text-charcoal-soft/80">{item.detail}</p>
-                    </div>
-                  </div>
-                ))}
-              </Reveal>
-            </div>
-          </div>
-        </Container>
-      </section>
-
       {/* Curriculum accordion */}
-      <section className="bg-ivory py-24 md:py-32">
+      <section id="curriculum" className="scroll-mt-24 bg-ivory py-24 md:py-32">
         <Container>
           <SectionHeading
-            eyebrow="Curriculum"
-            title="A course catalogue built for transfer."
-            description="A sample of the accredited coursework available to Go Early College students. Full sequencing is personalized during onboarding."
+            title="A course catalogue built for transfer. And for your child specifically."
+            description="Every Go Early College course earns 3 to 4 real, transferable US college credits. Course selection is personalised by your counsellor. These are sample courses from the full catalogue."
           />
           <Reveal className="mt-14">
             <Accordion items={CURRICULUM} />
           </Reveal>
-        </Container>
-      </section>
-
-      {/* Mentorship */}
-      <section className="bg-charcoal py-24 text-ivory md:py-32">
-        <Container>
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:items-center">
-            <Reveal className="flex flex-col gap-6">
-              <Eyebrow tone="gold">Mentorship</Eyebrow>
-              <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] leading-[1.1] text-balance">
-                A mentor in your corner, from day one.
-              </h2>
-              <p className="max-w-lg text-[16px] leading-relaxed text-ivory/75">
-                Every student is paired with a dedicated mentor who tracks academic
-                progress, plans course sequencing, and prepares university
-                applications alongside them. It&rsquo;s the difference between taking
-                courses and building a profile.
-              </p>
-              <ul className="mt-2 flex flex-col gap-3 text-[15px] text-ivory/75">
-                {["Personalized course planning", "Application strategy sessions", "Direct faculty office hours", "Parent progress updates"].map(
-                  (item) => (
-                    <li key={item} className="flex items-center gap-3">
-                      <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-                      {item}
-                    </li>
-                  )
-                )}
-              </ul>
-            </Reveal>
-            <Reveal className="relative aspect-[4/5] overflow-hidden rounded-sm lg:aspect-[5/6]">
-              <Image
-                src={IMAGES.mentorMeeting}
-                alt="A small group meets around a table for mentorship and office hours."
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 45vw, 90vw"
-              />
-            </Reveal>
+          <div className="mt-8 flex flex-col items-start gap-2">
+            <Button href="/contact" variant="outline" className="w-fit border-crimson text-crimson hover:bg-crimson/[0.06]">
+              Request the full course catalogue →
+            </Button>
+            <p className="text-[13px] text-charcoal-soft/55">
+              Your counsellor personalises course selection during onboarding.
+            </p>
           </div>
         </Container>
       </section>
 
+      <PsychometricAssessment />
+
+      <CreditPathway />
+
       {/* FAQ */}
       <section className="bg-cream py-24 md:py-32">
         <Container>
-          <SectionHeading align="center" eyebrow="Common Questions" title="Frequently asked questions." className="mx-auto max-w-2xl" />
+          <SectionHeading align="center" title="Frequently asked questions." className="mx-auto max-w-2xl" />
           <Reveal className="mx-auto mt-14 max-w-3xl">
             <Accordion items={FAQ} defaultOpen={null} />
           </Reveal>
         </Container>
       </section>
 
-      <FinalCta secondaryLabel="See University Pathways" secondaryHref="/universities" />
+      <FinalCta
+        title="Start Earlier. Go Further."
+        description="Every month your child is not enrolled is a month of credits not building. The free College Readiness Assessment takes 15 minutes."
+        primaryLabel="Take the Free Assessment"
+        primaryHref="/assessment"
+        secondaryLabel="Apply Now"
+        secondaryHref="/apply"
+        secondaryVariant="secondary"
+        reassurance="Free. No commitment. Personalised report in 60 seconds."
+      />
     </>
   );
 }

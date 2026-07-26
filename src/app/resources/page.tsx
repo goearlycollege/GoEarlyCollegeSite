@@ -1,18 +1,20 @@
-import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/section-heading";
 import { Reveal } from "@/components/ui/reveal";
 import { Button } from "@/components/ui/button";
 import { ResourceLibrary } from "@/components/resources/resource-library";
+import { NewsletterForm } from "@/components/resources/newsletter-form";
 import { FinalCta } from "@/components/final-cta";
 import { IMAGES } from "@/lib/images";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: "Resources",
   description:
     "Guides, blog posts, webinars, and parent resources on early college access, transfer credit, and applying to US universities.",
-};
+  path: "/resources",
+});
 
 export default function ResourcesPage() {
   return (
@@ -29,6 +31,30 @@ export default function ResourcesPage() {
       <section className="bg-ivory py-20 md:py-28">
         <Container>
           <ResourceLibrary />
+        </Container>
+      </section>
+
+      {/* Newsletter capture */}
+      <section className="bg-charcoal py-20 text-ivory md:py-24">
+        <Container>
+          <Reveal className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-4">
+              <Eyebrow tone="gold">The Go Early College Parent Newsletter</Eyebrow>
+              <h2 className="max-w-lg font-serif text-3xl leading-tight text-balance md:text-4xl">
+                Get the insights that help you decide — delivered monthly.
+              </h2>
+              <p className="max-w-lg text-[15.5px] leading-relaxed text-ivory/70">
+                Every month we send one email covering one topic in depth — credit
+                transfer, course selection, application strategy, financial planning,
+                or a new student success story. No sales. No pressure. Just the
+                information that helps families make a confident decision.
+              </p>
+            </div>
+            <div className="flex w-full max-w-md flex-col gap-2">
+              <NewsletterForm />
+              <p className="text-[12.5px] text-ivory/45">One email per month. Unsubscribe any time.</p>
+            </div>
+          </Reveal>
         </Container>
       </section>
 
@@ -52,7 +78,15 @@ export default function ResourcesPage() {
         </Container>
       </section>
 
-      <FinalCta eyebrow="Still Have Questions?" title="We're here to help." secondaryLabel="Contact Us" secondaryHref="/contact" />
+      <FinalCta
+        eyebrow="Still Have Questions?"
+        title="We're here to help."
+        primaryLabel="Take the Free Assessment"
+        primaryHref="/assessment"
+        secondaryLabel="Contact Us"
+        secondaryHref="/contact"
+        reassurance
+      />
     </>
   );
 }

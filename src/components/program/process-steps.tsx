@@ -7,24 +7,27 @@ import { SectionHeading } from "@/components/ui/section-heading";
 
 const STEPS = [
   {
-    title: "Enroll",
-    detail: "Apply and confirm eligibility while continuing at your current school.",
+    title: "Enrol",
+    detail: "Apply and confirm eligibility while continuing at your current school. Nothing about your existing education changes.",
+  },
+  {
+    title: "Know Yourself",
+    detail:
+      "Complete the psychometric assessment. Your counsellor uses the results to map your strengths, learning style, and career interests — then builds a personalised course sequence.",
   },
   {
     title: "Learn",
-    detail: "Join live, faculty-led courses alongside a small, motivated cohort.",
+    detail:
+      "Take accredited, credit-bearing courses from our 350+ US university partners. Online. Self-paced. 3 to 5 hours per week. Completable on evenings, weekends, and school holidays.",
   },
   {
     title: "Earn Credit",
-    detail: "Complete coursework and earn transferable, US-accredited college credit.",
+    detail:
+      "Complete a course. Earn 3 to 4 real, transferable US college credits — recorded permanently on your WASC-accredited US transcript. Credits never expire.",
   },
   {
-    title: "Get Mentored",
-    detail: "Work with a dedicated mentor on academic strategy and university applications.",
-  },
-  {
-    title: "Enter University",
-    detail: "Apply with a stronger transcript and arrive on campus already ahead.",
+    title: "Enter",
+    detail: "Apply with a transcript that proves readiness. Credits already transferred. University degree pathway already in progress.",
   },
 ];
 
@@ -57,8 +60,7 @@ export function ProcessSteps() {
       <Container>
         <SectionHeading
           align="center"
-          eyebrow="The Learning Model"
-          title="Five steps from enrollment to university."
+          title="Five steps from enrolment to university."
           className="mx-auto max-w-2xl"
         />
 
@@ -74,7 +76,7 @@ export function ProcessSteps() {
                   {i + 1}
                 </span>
                 <h3 className="font-serif text-lg text-charcoal">{step.title}</h3>
-                <p className="max-w-[200px] text-[14px] leading-relaxed text-charcoal-soft/75">{step.detail}</p>
+                <p className="max-w-[240px] text-[13.5px] leading-relaxed text-charcoal-soft/75">{step.detail}</p>
               </div>
             ))}
           </div>

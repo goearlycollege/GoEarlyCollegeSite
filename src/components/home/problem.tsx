@@ -1,14 +1,14 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { Stat } from "@/components/ui/stat";
 import { Reveal } from "@/components/ui/reveal";
+import { Button } from "@/components/ui/button";
 import { IMAGES } from "@/lib/images";
 
-const FACTS = [
-  { value: "330,000+", label: "Indian students studying in the US" },
-  { value: "#1", label: "India is the largest source of international students" },
-  { value: "20%+", label: "Annual growth in Indian student enrollment" },
+const PROBLEM_CARDS = [
+  "No Valid US Transcript",
+  "Millions Aspire, Very Few Access",
+  "No Bridge Has Ever Been Built — Until Now",
 ];
 
 export function Problem() {
@@ -18,15 +18,25 @@ export function Problem() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-10">
           <div className="flex flex-col justify-center gap-8">
             <SectionHeading
-              eyebrow="The Opportunity Gap"
-              title="The strongest university journeys begin long before university."
-              description="Indian student enrollment in the United States continues to grow — driven by ambition, global opportunity, and the pursuit of world-class education. But the strongest journeys need a head start, and until now, nothing has existed to give students one."
+              eyebrow="The Problem No One Is Solving"
+              title="Your child is ready. The credential system is not built for them."
+              description="India sends more students to US universities than any other country in the world. Yet CBSE, ICSE, and State Board students have no US-compatible transcript — which means they cannot access early college programs, dual enrolment pathways, or credit-building courses at American universities, regardless of how talented they are. The barrier is not your child's ability. It is a structural gap in the credential system. Go Early College was built to close it permanently."
             />
-            <Reveal as="div" stagger className="grid grid-cols-1 gap-8 border-t border-charcoal/10 pt-8 sm:grid-cols-3">
-              {FACTS.map((fact) => (
-                <Stat key={fact.label} value={fact.value} label={fact.label} tone="dark" />
+            <Reveal as="div" stagger className="grid grid-cols-1 gap-6 border-t border-charcoal/10 pt-8 sm:grid-cols-3">
+              {PROBLEM_CARDS.map((title, i) => (
+                <div key={title} className="flex flex-col gap-3">
+                  <span className="font-serif text-sm text-gold-dark">{String(i + 1).padStart(2, "0")}</span>
+                  <p className="font-serif text-lg leading-snug text-charcoal">{title}</p>
+                </div>
               ))}
             </Reveal>
+            <Button
+              href="/program"
+              variant="ghost"
+              className="w-fit px-0 py-0 normal-case tracking-normal text-[15px] font-semibold text-crimson hover:bg-transparent hover:underline"
+            >
+              Understand the full pathway →
+            </Button>
           </div>
 
           <Reveal className="relative order-first grid grid-cols-5 grid-rows-5 gap-4 lg:order-last">

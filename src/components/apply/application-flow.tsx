@@ -1,54 +1,70 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
+import { trackApplicationComplete, trackApplicationStart } from "@/lib/analytics";
 
 type ApplicationData = {
   fullName: string;
   email: string;
   phone: string;
+  whatsapp: string;
   dob: string;
+  city: string;
+  preferredLanguage: string;
   schoolName: string;
   grade: string;
   board: string;
-  percentage: string;
-  startTerm: string;
-  interests: string[];
-  availability: string;
+  stream: string;
+  mostRecentResult: string;
+  subjectAreas: string[];
+  targetUniversityType: string;
+  applicationTimeline: string;
+  previousCourses: "" | "Yes" | "No";
+  previousCoursesDescription: string;
+  hopesForGEC: string;
   transcriptFileName: string;
   idFileName: string;
+  confirmAccurate: boolean;
 };
 
 const DEFAULT_DATA: ApplicationData = {
   fullName: "",
   email: "",
   phone: "",
+  whatsapp: "",
   dob: "",
+  city: "",
+  preferredLanguage: "",
   schoolName: "",
   grade: "",
   board: "",
-  percentage: "",
-  startTerm: "",
-  interests: [],
-  availability: "",
+  stream: "",
+  mostRecentResult: "",
+  subjectAreas: [],
+  targetUniversityType: "",
+  applicationTimeline: "",
+  previousCourses: "",
+  previousCoursesDescription: "",
+  hopesForGEC: "",
   transcriptFileName: "",
   idFileName: "",
+  confirmAccurate: false,
 };
 
 const STORAGE_KEY = "gec-application-draft";
 
 const STEPS = ["Basic Info", "Academic Background", "Program Interest", "Documents", "Review"] as const;
 
-const INTEREST_OPTIONS = [
-  "Computer Science",
-  "Business & Economics",
-  "Engineering",
-  "Humanities",
-  "Life Sciences",
-  "Data & Statistics",
-];
+const LANGUAGES = ["Tamil", "Telugu", "Hindi", "Kannada", "English"];
+const GRADES = ["Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"];
+const BOARDS = ["CBSE", "ICSE", "State Board", "IB", "IGCSE", "Other"];
+const STREAMS = ["Science", "Commerce", "Arts", "Not applicable"];
+const SUBJECT_AREAS = ["Sciences", "Maths", "Business", "Humanities", "Technology", "Arts", "Not sure"];
+const UNIVERSITY_TYPES = ["Large public", "Private research", "Liberal arts", "Community college", "Not sure"];
+const TIMELINES = ["Within 1 year", "1–2 years", "2–3 years", "3+ years"];
 
 const inputClass =
   "w-full rounded-sm border border-charcoal/15 bg-ivory px-4 py-3.5 text-[15px] text-charcoal placeholder:text-charcoal-soft/40 transition-colors focus:border-crimson focus:outline-none";
@@ -57,27 +73,35 @@ const labelClass = "text-[12.5px] font-semibold uppercase tracking-[0.08em] text
 function isStepValid(step: number, data: ApplicationData) {
   switch (step) {
     case 0:
-      return Boolean(data.fullName && data.email && data.phone && data.dob);
+      return Boolean(data.fullName && data.email && data.phone && data.dob && data.city && data.preferredLanguage);
     case 1:
       return Boolean(data.schoolName && data.grade && data.board);
     case 2:
-      return Boolean(data.startTerm && data.interests.length > 0);
+      return Boolean(data.applicationTimeline && data.subjectAreas.length > 0);
     case 3:
       return Boolean(data.transcriptFileName);
+    case 4:
+      return data.confirmAccurate;
     default:
       return true;
   }
 }
 
 export function ApplicationFlow() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<ApplicationData>(DEFAULT_DATA);
   const [restored, setRestored] = useState(false);
   const [saveNote, setSaveNote] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [refNumber, setRefNumber] = useState("");
+  const [whatsappSameAsPhone, setWhatsappSameAsPhone] = useState(true);
   const hasMounted = useRef(false);
   const stepRef = useRef<HTMLDivElement>(null);
+
+  // Brief 10.3 — application_start fires once, when the form actually mounts
+  // (not on every render).
+  useEffect(() => {
+    trackApplicationStart();
+  }, []);
 
   // Restore draft on mount. This reads localStorage, which is unavailable during
   // SSR — the effect (post-hydration) is the correct, hydration-safe place for it.
@@ -117,19 +141,19 @@ export function ApplicationFlow() {
         { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }
       );
     },
-    { dependencies: [step, submitted], scope: stepRef }
+    { dependencies: [step], scope: stepRef }
   );
 
   function update<K extends keyof ApplicationData>(key: K, value: ApplicationData[K]) {
     setData((d) => ({ ...d, [key]: value }));
   }
 
-  function toggleInterest(interest: string) {
+  function toggleSubjectArea(area: string) {
     setData((d) => ({
       ...d,
-      interests: d.interests.includes(interest)
-        ? d.interests.filter((i) => i !== interest)
-        : [...d.interests, interest],
+      subjectAreas: d.subjectAreas.includes(area)
+        ? d.subjectAreas.filter((i) => i !== area)
+        : [...d.subjectAreas, area],
     }));
   }
 
@@ -141,14 +165,11 @@ export function ApplicationFlow() {
   }
 
   function handleSubmit() {
-    const ref = `GEC-${Math.floor(100000 + Math.random() * 900000)}`;
-    setRefNumber(ref);
-    setSubmitted(true);
+    trackApplicationComplete();
     window.localStorage.removeItem(STORAGE_KEY);
-  }
-
-  if (submitted) {
-    return <Confirmation refNumber={refNumber} name={data.fullName} />;
+    const params = new URLSearchParams({ type: "application" });
+    if (data.fullName) params.set("name", data.fullName);
+    router.push(`/thank-you?${params.toString()}`);
   }
 
   const valid = isStepValid(step, data);
@@ -167,31 +188,94 @@ export function ApplicationFlow() {
       <div ref={stepRef} className="mt-12">
         {step === 0 && (
           <div className="flex flex-col gap-5">
-            <StepHeading title="Let's start with the basics." detail="A little about you." />
+            <StepHeading
+              title="Let's start with the basics."
+              detail="Two minutes of information — everything here is saved automatically as you go."
+            />
             <div className="flex flex-col gap-2">
               <label className={labelClass} htmlFor="fullName">Full Name</label>
               <input id="fullName" className={inputClass} value={data.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="Your full name" />
             </div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <label className={labelClass} htmlFor="email">Email</label>
+                <label className={labelClass} htmlFor="email">Email Address</label>
                 <input id="email" type="email" className={inputClass} value={data.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" />
               </div>
               <div className="flex flex-col gap-2">
-                <label className={labelClass} htmlFor="phone">Phone</label>
-                <input id="phone" type="tel" className={inputClass} value={data.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+91 00000 00000" />
+                <label className={labelClass} htmlFor="phone">Phone Number</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  className={inputClass}
+                  value={data.phone}
+                  onChange={(e) => {
+                    update("phone", e.target.value);
+                    if (whatsappSameAsPhone) update("whatsapp", e.target.value);
+                  }}
+                  placeholder="+91 00000 00000"
+                />
               </div>
             </div>
-            <div className="flex flex-col gap-2 sm:w-1/2">
-              <label className={labelClass} htmlFor="dob">Date of Birth</label>
-              <input id="dob" type="date" className={inputClass} value={data.dob} onChange={(e) => update("dob", e.target.value)} />
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <label className={labelClass} htmlFor="whatsapp">WhatsApp Number</label>
+                <label className="flex items-center gap-1.5 text-[12px] text-charcoal-soft/60">
+                  <input
+                    type="checkbox"
+                    checked={whatsappSameAsPhone}
+                    onChange={(e) => {
+                      setWhatsappSameAsPhone(e.target.checked);
+                      if (e.target.checked) update("whatsapp", data.phone);
+                    }}
+                    className="accent-crimson"
+                  />
+                  Same as phone
+                </label>
+              </div>
+              <input
+                id="whatsapp"
+                type="tel"
+                className={cn(inputClass, whatsappSameAsPhone && "opacity-60")}
+                value={data.whatsapp}
+                disabled={whatsappSameAsPhone}
+                readOnly={whatsappSameAsPhone}
+                onChange={(e) => update("whatsapp", e.target.value)}
+                placeholder="+91 00000 00000"
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <label className={labelClass} htmlFor="dob">Date of Birth</label>
+                <input id="dob" type="date" className={inputClass} value={data.dob} onChange={(e) => update("dob", e.target.value)} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className={labelClass} htmlFor="city">City</label>
+                <input id="city" className={inputClass} value={data.city} onChange={(e) => update("city", e.target.value)} placeholder="Your city" />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="preferredLanguage">Preferred Language for Admissions Call</label>
+              <select
+                id="preferredLanguage"
+                className={inputClass}
+                value={data.preferredLanguage}
+                onChange={(e) => update("preferredLanguage", e.target.value)}
+              >
+                <option value="">Select a language</option>
+                {LANGUAGES.map((l) => (
+                  <option key={l} value={l}>{l}</option>
+                ))}
+              </select>
             </div>
           </div>
         )}
 
         {step === 1 && (
           <div className="flex flex-col gap-5">
-            <StepHeading title="Tell us about your school." detail="Current academic background." />
+            <StepHeading
+              title="Tell us about your school."
+              detail="Nothing about your current education changes — we just need to know where your child stands today."
+            />
             <div className="flex flex-col gap-2">
               <label className={labelClass} htmlFor="schoolName">School Name</label>
               <input id="schoolName" className={inputClass} value={data.schoolName} onChange={(e) => update("schoolName", e.target.value)} placeholder="Your current school" />
@@ -201,50 +285,59 @@ export function ApplicationFlow() {
                 <label className={labelClass} htmlFor="grade">Current Grade</label>
                 <select id="grade" className={inputClass} value={data.grade} onChange={(e) => update("grade", e.target.value)}>
                   <option value="">Select grade</option>
-                  {["Grade 9", "Grade 10", "Grade 11", "Grade 12"].map((g) => (
+                  {GRADES.map((g) => (
                     <option key={g} value={g}>{g}</option>
                   ))}
                 </select>
               </div>
               <div className="flex flex-col gap-2">
-                <label className={labelClass} htmlFor="board">Board / Curriculum</label>
+                <label className={labelClass} htmlFor="board">School Board</label>
                 <select id="board" className={inputClass} value={data.board} onChange={(e) => update("board", e.target.value)}>
                   <option value="">Select board</option>
-                  {["CBSE", "ICSE", "IB", "IGCSE", "State Board", "Other"].map((b) => (
+                  {BOARDS.map((b) => (
                     <option key={b} value={b}>{b}</option>
                   ))}
                 </select>
               </div>
             </div>
             <div className="flex flex-col gap-2 sm:w-1/2">
-              <label className={labelClass} htmlFor="percentage">Most Recent Overall Score (%)</label>
-              <input id="percentage" type="number" min={0} max={100} className={inputClass} value={data.percentage} onChange={(e) => update("percentage", e.target.value)} placeholder="e.g. 88" />
+              <label className={labelClass} htmlFor="stream">Academic Stream (if applicable)</label>
+              <select id="stream" className={inputClass} value={data.stream} onChange={(e) => update("stream", e.target.value)}>
+                <option value="">Select stream</option>
+                {STREAMS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="mostRecentResult">Most Recent Result</label>
+              <input
+                id="mostRecentResult"
+                className={inputClass}
+                value={data.mostRecentResult}
+                onChange={(e) => update("mostRecentResult", e.target.value)}
+                placeholder="e.g. 88% aggregate, or A grade — a report card upload follows in Step 4"
+              />
             </div>
           </div>
         )}
 
         {step === 2 && (
           <div className="flex flex-col gap-6">
-            <StepHeading title="What are you interested in?" detail="This helps us plan your first course sequence." />
-            <div className="flex flex-col gap-2">
-              <label className={labelClass} htmlFor="startTerm">Preferred Start Term</label>
-              <select id="startTerm" className={inputClass} value={data.startTerm} onChange={(e) => update("startTerm", e.target.value)}>
-                <option value="">Select a term</option>
-                {["Fall 2026", "Spring 2027", "Fall 2027"].map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            </div>
+            <StepHeading
+              title="What are you hoping to build?"
+              detail="This helps your counsellor personalise your first course sequence."
+            />
             <div className="flex flex-col gap-3">
-              <span className={labelClass}>Areas of Interest (choose all that apply)</span>
+              <span className={labelClass}>Subject Areas (choose all that apply)</span>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {INTEREST_OPTIONS.map((interest) => {
-                  const checked = data.interests.includes(interest);
+                {SUBJECT_AREAS.map((area) => {
+                  const checked = data.subjectAreas.includes(area);
                   return (
                     <button
                       type="button"
-                      key={interest}
-                      onClick={() => toggleInterest(interest)}
+                      key={area}
+                      onClick={() => toggleSubjectArea(area)}
                       className={cn(
                         "flex items-center gap-3 rounded-sm border px-4 py-3.5 text-left text-[14.5px] transition-colors duration-200",
                         checked ? "border-crimson bg-crimson/5 text-crimson" : "border-charcoal/15 text-charcoal-soft/80 hover:border-crimson/30"
@@ -255,35 +348,101 @@ export function ApplicationFlow() {
                           <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" className="h-2.5 w-2.5"><path d="m5 13 4 4L19 7" /></svg>
                         )}
                       </span>
-                      {interest}
+                      {area}
                     </button>
                   );
                 })}
               </div>
             </div>
-            <div className="flex flex-col gap-2 sm:w-1/2">
-              <label className={labelClass} htmlFor="availability">Weekly Availability</label>
-              <select id="availability" className={inputClass} value={data.availability} onChange={(e) => update("availability", e.target.value)}>
-                <option value="">Select availability</option>
-                {["4-6 hours", "6-8 hours", "8-10 hours", "10+ hours"].map((a) => (
-                  <option key={a} value={a}>{a}</option>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <label className={labelClass} htmlFor="targetUniversityType">Target University Type</label>
+                <select
+                  id="targetUniversityType"
+                  className={inputClass}
+                  value={data.targetUniversityType}
+                  onChange={(e) => update("targetUniversityType", e.target.value)}
+                >
+                  <option value="">Select a type</option>
+                  {UNIVERSITY_TYPES.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className={labelClass} htmlFor="applicationTimeline">University Application Timeline</label>
+                <select
+                  id="applicationTimeline"
+                  className={inputClass}
+                  value={data.applicationTimeline}
+                  onChange={(e) => update("applicationTimeline", e.target.value)}
+                >
+                  <option value="">Select a timeline</option>
+                  {TIMELINES.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <span className={labelClass}>Previous College Courses or Certifications?</span>
+              <div className="flex gap-3">
+                {(["Yes", "No"] as const).map((opt) => (
+                  <button
+                    type="button"
+                    key={opt}
+                    onClick={() => update("previousCourses", opt)}
+                    className={cn(
+                      "rounded-sm border px-6 py-2.5 text-[14px] font-semibold transition-colors duration-200",
+                      data.previousCourses === opt
+                        ? "border-crimson bg-crimson/5 text-crimson"
+                        : "border-charcoal/15 text-charcoal-soft/80 hover:border-crimson/30"
+                    )}
+                  >
+                    {opt}
+                  </button>
                 ))}
-              </select>
+              </div>
+              {data.previousCourses === "Yes" && (
+                <input
+                  className={inputClass}
+                  value={data.previousCoursesDescription}
+                  onChange={(e) => update("previousCoursesDescription", e.target.value)}
+                  placeholder="Briefly describe them"
+                />
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="hopesForGEC">
+                What are you hoping Go Early College will give your child? (150 words max)
+              </label>
+              <textarea
+                id="hopesForGEC"
+                rows={4}
+                maxLength={1200}
+                className={inputClass}
+                value={data.hopesForGEC}
+                onChange={(e) => update("hopesForGEC", e.target.value)}
+                placeholder="Tell us a little about your goals."
+              />
             </div>
           </div>
         )}
 
         {step === 3 && (
           <div className="flex flex-col gap-6">
-            <StepHeading title="Upload your documents." detail="PDF or image files, up to 10MB each." />
+            <StepHeading
+              title="Upload your documents."
+              detail="Used only to confirm eligibility. Never shared. PDF, JPG, or PNG files, up to 5MB each."
+            />
             <FileField
-              label="Most Recent Transcript / Report Card"
+              label="Most Recent School Report Card"
               required
               fileName={data.transcriptFileName}
               onSelect={(name) => update("transcriptFileName", name)}
             />
             <FileField
-              label="Student ID or School ID (optional)"
+              label="School ID or Enrolment Confirmation (optional)"
               fileName={data.idFileName}
               onSelect={(name) => update("idFileName", name)}
             />
@@ -291,29 +450,88 @@ export function ApplicationFlow() {
         )}
 
         {step === 4 && (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             <StepHeading title="Review your application." detail="Make sure everything looks right before you submit." />
-            <ReviewSection title="Basic Info" onEdit={() => setStep(0)}>
-              <ReviewRow label="Name" value={data.fullName} />
-              <ReviewRow label="Email" value={data.email} />
-              <ReviewRow label="Phone" value={data.phone} />
-              <ReviewRow label="Date of Birth" value={data.dob} />
-            </ReviewSection>
-            <ReviewSection title="Academic Background" onEdit={() => setStep(1)}>
-              <ReviewRow label="School" value={data.schoolName} />
-              <ReviewRow label="Grade" value={data.grade} />
-              <ReviewRow label="Board" value={data.board} />
-              <ReviewRow label="Score" value={data.percentage ? `${data.percentage}%` : ""} />
-            </ReviewSection>
-            <ReviewSection title="Program Interest" onEdit={() => setStep(2)}>
-              <ReviewRow label="Start Term" value={data.startTerm} />
-              <ReviewRow label="Interests" value={data.interests.join(", ")} />
-              <ReviewRow label="Availability" value={data.availability} />
-            </ReviewSection>
-            <ReviewSection title="Documents" onEdit={() => setStep(3)}>
-              <ReviewRow label="Transcript" value={data.transcriptFileName} />
-              <ReviewRow label="ID" value={data.idFileName || "Not provided"} />
-            </ReviewSection>
+
+            <div className="flex flex-col gap-2">
+              <ReviewSection title="Basic Info" onEdit={() => setStep(0)}>
+                <ReviewRow label="Name" value={data.fullName} />
+                <ReviewRow label="Email" value={data.email} />
+                <ReviewRow label="Phone" value={data.phone} />
+                <ReviewRow label="WhatsApp" value={data.whatsapp} />
+                <ReviewRow label="Date of Birth" value={data.dob} />
+                <ReviewRow label="City" value={data.city} />
+                <ReviewRow label="Preferred Language" value={data.preferredLanguage} />
+              </ReviewSection>
+              <ReviewSection title="Academic Background" onEdit={() => setStep(1)}>
+                <ReviewRow label="School" value={data.schoolName} />
+                <ReviewRow label="Grade" value={data.grade} />
+                <ReviewRow label="Board" value={data.board} />
+                <ReviewRow label="Stream" value={data.stream} />
+                <ReviewRow label="Most Recent Result" value={data.mostRecentResult} />
+              </ReviewSection>
+              <ReviewSection title="Program Interest" onEdit={() => setStep(2)}>
+                <ReviewRow label="Subject Areas" value={data.subjectAreas.join(", ")} />
+                <ReviewRow label="Target University Type" value={data.targetUniversityType} />
+                <ReviewRow label="Application Timeline" value={data.applicationTimeline} />
+                <ReviewRow label="Previous Courses" value={data.previousCourses} />
+              </ReviewSection>
+              <ReviewSection title="Documents" onEdit={() => setStep(3)}>
+                <ReviewRow label="Report Card" value={data.transcriptFileName} />
+                <ReviewRow label="ID" value={data.idFileName || "Not provided"} />
+              </ReviewSection>
+            </div>
+
+            {/* Counsellor reveal */}
+            <div className="flex items-center gap-5 rounded-sm border border-gold/30 bg-gold-tint/40 p-6">
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-gold-dark/50 text-[11px] font-semibold uppercase tracking-[0.06em] text-gold-dark">
+                Photo
+              </span>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-gold-dark">Your Counsellor</p>
+                <p className="mt-1 font-serif text-lg text-charcoal">Assigned after your academic review.</p>
+                <p className="mt-1 text-[13.5px] text-charcoal-soft/70">
+                  Every student is paired 1:1 with a trained counsellor fluent in your
+                  preferred language, from enrolment through university application.
+                </p>
+              </div>
+            </div>
+
+            {/* What happens next */}
+            <div className="rounded-sm border border-charcoal/10 bg-cream p-6">
+              <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-charcoal-soft/50">
+                What Happens Next
+              </p>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-4">
+                {[
+                  { when: "Day 1", what: "Receipt confirmed" },
+                  { when: "Days 2–3", what: "Academic review" },
+                  { when: "Days 3–5", what: "Admissions call" },
+                  { when: "Days 5–10", what: "Offer issued" },
+                ].map((row) => (
+                  <div key={row.when}>
+                    <p className="font-serif text-lg text-crimson">{row.when}</p>
+                    <p className="text-[13.5px] text-charcoal-soft/70">{row.what}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <p className="border-l-2 border-gold pl-5 font-serif text-lg italic text-crimson">
+              &ldquo;The biggest advantage is not more time. It is the right time. You
+              have just taken the first step toward giving your child both.&rdquo;
+            </p>
+
+            <label className="flex items-start gap-3 text-[14px] text-charcoal-soft/80">
+              <input
+                type="checkbox"
+                checked={data.confirmAccurate}
+                onChange={(e) => update("confirmAccurate", e.target.checked)}
+                className="mt-0.5 accent-crimson"
+              />
+              Information accurate. I understand submission begins the admissions
+              process.
+            </label>
           </div>
         )}
       </div>
@@ -350,9 +568,10 @@ export function ApplicationFlow() {
           <button
             type="button"
             onClick={handleSubmit}
-            className="inline-flex items-center justify-center rounded-sm bg-gold px-7 py-3.5 text-[13px] font-semibold uppercase tracking-[0.12em] text-crimson-dark transition-all duration-300 hover:-translate-y-0.5 hover:bg-gold-dark"
+            disabled={!valid}
+            className="inline-flex items-center justify-center rounded-sm bg-gold px-7 py-3.5 text-[13px] font-semibold uppercase tracking-[0.12em] text-crimson-dark transition-all duration-300 hover:-translate-y-0.5 hover:bg-gold-dark disabled:pointer-events-none disabled:opacity-40"
           >
-            Submit Application
+            Submit My Application →
           </button>
         )}
       </div>
@@ -401,6 +620,8 @@ function StepHeading({ title, detail }: { title: string; detail: string }) {
   );
 }
 
+const MAX_FILE_BYTES = 5 * 1024 * 1024; // Brief Section 8 — 5MB max
+
 function FileField({
   label,
   required,
@@ -412,6 +633,7 @@ function FileField({
   fileName: string;
   onSelect: (name: string) => void;
 }) {
+  const [error, setError] = useState("");
   const inputId = `file-${label
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
@@ -439,6 +661,7 @@ function FileField({
           {fileName ? "Replace" : "Browse"}
         </span>
       </label>
+      {error && <span className="text-[13px] text-crimson">{error}</span>}
       <input
         id={inputId}
         type="file"
@@ -446,7 +669,14 @@ function FileField({
         accept=".pdf,.jpg,.jpeg,.png"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) onSelect(file.name);
+          if (!file) return;
+          if (file.size > MAX_FILE_BYTES) {
+            setError("That file is over 5MB. Please choose a smaller PDF, JPG, or PNG.");
+            e.target.value = "";
+            return;
+          }
+          setError("");
+          onSelect(file.name);
         }}
       />
     </div>
@@ -472,48 +702,6 @@ function ReviewRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-center justify-between gap-4 text-[14px]">
       <span className="text-charcoal-soft/55">{label}</span>
       <span className="text-right text-charcoal">{value || "—"}</span>
-    </div>
-  );
-}
-
-function Confirmation({ refNumber, name }: { refNumber: string; name: string }) {
-  const checkRef = useRef<SVGPathElement>(null);
-  const circleRef = useRef<HTMLSpanElement>(null);
-
-  useGSAP(() => {
-    const path = checkRef.current;
-    if (!path) return;
-    const length = path.getTotalLength();
-    gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-    const tl = gsap.timeline({ delay: 0.1 });
-    tl.fromTo(circleRef.current, { scale: 0, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.5, ease: "back.out(2.4)" })
-      .to(path, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, "-=0.15")
-      .from(".confirm-fade", { autoAlpha: 0, y: 16, duration: 0.6, stagger: 0.1, ease: "power2.out" }, "-=0.2");
-  });
-
-  return (
-    <div className="mx-auto flex max-w-lg flex-col items-center gap-6 py-12 text-center">
-      <span ref={circleRef} className="flex h-20 w-20 items-center justify-center rounded-full bg-crimson">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-9 w-9">
-          <path ref={checkRef} d="m5 13 4 4L19 7" />
-        </svg>
-      </span>
-      <h2 className="confirm-fade font-serif text-3xl text-charcoal md:text-4xl">
-        {name ? `Thank you, ${name.split(" ")[0]}.` : "Application submitted."}
-      </h2>
-      <p className="confirm-fade text-[15.5px] leading-relaxed text-charcoal-soft/75">
-        Your application has been received. Our admissions team will review it and
-        follow up by email within three business days.
-      </p>
-      <div className="confirm-fade rounded-sm border border-gold/30 bg-gold-tint/40 px-6 py-3 font-serif text-lg text-crimson">
-        Reference: {refNumber}
-      </div>
-      <Link
-        href="/"
-        className="confirm-fade mt-4 text-[13px] font-semibold uppercase tracking-[0.12em] text-charcoal-soft/60 transition-colors hover:text-crimson"
-      >
-        &larr; Back to Home
-      </Link>
     </div>
   );
 }
