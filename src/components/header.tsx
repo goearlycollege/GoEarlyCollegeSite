@@ -62,14 +62,28 @@ export default function Header() {
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-500",
           solid
-            ? "border-b border-charcoal/10 bg-ivory/95 py-3 shadow-[0_4px_24px_-8px_rgba(29,31,35,0.12)] backdrop-blur-md"
-            : "border-b border-white/0 bg-transparent py-6"
+            ? "border-b border-charcoal/10 bg-ivory/95 py-3 shadow-[0_4px_24px_-8px_rgba(29,31,35,0.12)] backdrop-blur-md min-[1440px]:py-0"
+            : "border-b border-white/0 bg-transparent py-6 min-[1440px]:py-0"
         )}
       >
-      <div className="mx-auto flex w-full max-w-[1360px] items-center justify-between px-6 md:px-10 lg:px-16">
-        <Logo variant={solid ? "crimson" : "white"} />
+      {/*
+        The nav/CTA row only ever renders in full below at ≥1440px (see the
+        `min-[1440px]:flex` gates throughout). Below that, the compact
+        logo + hamburger treatment (unchanged from before this redesign)
+        carries laptops — 7 nav labels including "Success Stories" plus two
+        full-size CTAs cannot fit on one un-wrapped line below ~1420px at
+        any reasonable spacing, so widening the breakpoint (rather than
+        cramming/wrapping) is what keeps every listed item on one baseline.
+      */}
+      <div className="mx-auto flex w-full max-w-[1360px] items-center justify-between px-6 md:px-10 lg:px-16 min-[1440px]:max-w-[1700px] min-[1440px]:px-[clamp(2rem,4vw,4.5rem)] min-[1440px]:max-[1599.98px]:gap-5 min-[1440px]:max-[1599.98px]:min-h-[88px] min-[1600px]:max-[1919.98px]:gap-10 min-[1600px]:max-[1919.98px]:min-h-[92px] min-[1920px]:gap-12 min-[1920px]:min-h-[96px]">
+        <Logo
+          variant={solid ? "crimson" : "white"}
+          className="min-[1440px]:gap-4"
+          markClassName="min-[1440px]:max-[1599.98px]:h-[46px] min-[1600px]:max-[1919.98px]:h-[50px] min-[1920px]:h-[54px]"
+          wordmarkClassName="min-[1440px]:text-[14px] min-[1440px]:tracking-[0.17em]"
+        />
 
-        <nav className="hidden items-center gap-8 lg:flex">
+        <nav className="hidden flex-1 items-center justify-center gap-8 min-[1440px]:flex min-[1440px]:max-[1599.98px]:gap-5 min-[1600px]:max-[1919.98px]:gap-9 min-[1920px]:gap-10">
           {NAV_LINKS.map((link) => {
             const active = pathname === link.href;
             return (
@@ -77,7 +91,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "relative text-[12.5px] font-semibold uppercase tracking-[0.14em] transition-colors duration-300",
+                  "relative whitespace-nowrap text-[12.5px] font-medium uppercase tracking-[0.14em] transition-colors duration-300 min-[1440px]:max-[1919.98px]:text-[13px] min-[1920px]:text-[13.5px]",
                   solid ? "text-charcoal-soft hover:text-crimson" : "text-white/85 hover:text-white",
                   active && (solid ? "text-crimson" : "text-white")
                 )}
@@ -94,12 +108,12 @@ export default function Header() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-3 min-[1440px]:flex min-[1600px]:max-[1919.98px]:gap-4 min-[1920px]:gap-5">
           <Button
             href="/assessment"
             variant="outline"
             className={cn(
-              "border-crimson px-6 py-3",
+              "border-crimson min-[1600px]:max-[1919.98px]:px-8 min-[1600px]:max-[1919.98px]:py-4 min-[1920px]:px-9 min-[1920px]:py-4",
               solid ? "text-crimson hover:bg-crimson/[0.06]" : "text-white hover:bg-white/10"
             )}
           >
@@ -108,13 +122,13 @@ export default function Header() {
           <Button
             href="/apply"
             variant="primary"
-            className="px-6 py-3"
+            className="min-[1600px]:max-[1919.98px]:px-8 min-[1600px]:max-[1919.98px]:py-4 min-[1920px]:px-9 min-[1920px]:py-4"
           >
             Apply Now
           </Button>
         </div>
 
-        <div className="flex items-center gap-3 lg:hidden">
+        <div className="flex items-center gap-3 min-[1440px]:hidden">
           <Button href="/apply" variant="primary" className="px-4 py-2.5 text-[11px]">
             Apply Now
           </Button>
@@ -150,7 +164,7 @@ export default function Header() {
           would shrink it to the header's own height instead of the viewport. */}
       <div
         className={cn(
-          "fixed inset-0 top-0 z-50 flex flex-col bg-ivory transition-all duration-500 lg:hidden",
+          "fixed inset-0 top-0 z-50 flex flex-col bg-ivory transition-all duration-500 min-[1440px]:hidden",
           menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         )}
       >

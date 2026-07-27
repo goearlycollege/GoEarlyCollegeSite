@@ -7,11 +7,15 @@ export function Logo({
   className,
   showWordmark = true,
   size = 40,
+  markClassName,
+  wordmarkClassName,
 }: {
   variant?: "crimson" | "white";
   className?: string;
   showWordmark?: boolean;
   size?: number;
+  markClassName?: string;
+  wordmarkClassName?: string;
 }) {
   const src = variant === "white" ? "/brand/logo-mark-white.png" : "/brand/logo-mark.png";
 
@@ -23,13 +27,17 @@ export function Logo({
         width={size}
         height={size}
         priority
-        className="h-9 w-auto shrink-0 transition-transform duration-300 group-hover:scale-105 md:h-10"
+        className={cn(
+          "h-9 w-auto shrink-0 transition-transform duration-300 group-hover:scale-105 md:h-10",
+          markClassName
+        )}
       />
       {showWordmark && (
         <span
           className={cn(
             "font-serif text-[13px] font-semibold uppercase leading-[1.2] tracking-[0.16em]",
-            variant === "white" ? "text-white" : "text-crimson"
+            variant === "white" ? "text-white" : "text-crimson",
+            wordmarkClassName
           )}
         >
           Go

@@ -34,6 +34,26 @@
   --header-height: 84px;
 }
 
+/* Matches the header's own min-[1440px]/min-[1600px]/min-[1920px] tiers
+   (header.tsx) — the desktop nav row only grows taller from 1440px up. */
+@media (min-width: 1440px) {
+  :root {
+    --header-height: 88px;
+  }
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --header-height: 92px;
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --header-height: 96px;
+  }
+}
+
 * {
   border-color: color-mix(in srgb, var(--color-charcoal) 12%, transparent);
 }
