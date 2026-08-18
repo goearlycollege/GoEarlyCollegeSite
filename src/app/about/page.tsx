@@ -74,13 +74,13 @@ const LEADERSHIP = [
     name: "Mohanalakshmi Rajakumar",
     role: "Founder and Chief Executive, American World School",
     bio: "Educator, entrepreneur, Women Champion Award (British Parliament). Creator of the Kidspreneur curriculum under Singapore MOE. Founder of Asia's first entrepreneurial school.",
-    image: IMAGES.portraitAcademicsHead,
+    image: "/mohanalakshmi.png",
   },
   {
     name: "Paul Montague",
     role: "Chief Executive Officer, Go Early College",
     bio: "Partnership Director with experience in dual diploma programs, early college access, and international school networks across South Asia, Southeast Asia, Middle East, Africa, and Europe.",
-    image: IMAGES.portraitFounder,
+    image: "/paulmontague.jpg",
   },
 ];
 
@@ -267,8 +267,9 @@ export default function AboutPage() {
       {/* Leadership */}
       <section className="border-t border-charcoal/10 bg-cream py-24 md:py-32">
         <Container>
-          <h2 className="max-w-2xl font-serif text-[clamp(2rem,4vw,3.25rem)] leading-[1.1] text-balance text-charcoal">
-            Led by educators and institution-builders — not marketers.
+          <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] leading-[1.1] text-charcoal">
+            <span className="block">Led by educators and institution-builders</span>
+            <span className="block">— not marketers.</span>
           </h2>
           <Reveal as="div" stagger className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2">
             {LEADERSHIP.map((person) => (

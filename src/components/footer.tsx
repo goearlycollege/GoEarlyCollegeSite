@@ -30,8 +30,8 @@ export default function Footer() {
               >
                 admissions@goearlycollege.com
               </a>
-              <a href="tel:+918000000000" className="w-fit transition-colors hover:text-gold">
-                +91 80000 00000
+              <a href="tel:+918220606367" className="w-fit transition-colors hover:text-gold">
+                +91 82206 06367
               </a>
             </div>
           </div>
