@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { trackApplicationComplete, trackApplicationStart } from "@/lib/analytics";
+import { submitForm } from "@/lib/submit-form";
+import { uploadApplicationFile } from "@/lib/storage";
 
 type ApplicationData = {
   fullName: string;
@@ -94,6 +96,10 @@ export function ApplicationFlow() {
   const [restored, setRestored] = useState(false);
   const [saveNote, setSaveNote] = useState(false);
   const [whatsappSameAsPhone, setWhatsappSameAsPhone] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [transcriptFile, setTranscriptFile] = useState<File | null>(null);
+  const [idFile, setIdFile] = useState<File | null>(null);
   const hasMounted = useRef(false);
   const stepRef = useRef<HTMLDivElement>(null);
 
@@ -164,7 +170,45 @@ export function ApplicationFlow() {
     if (step > 0) setStep((s) => s - 1);
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    setSubmitting(true);
+    setSubmitError("");
+
+    if (data.transcriptFileName && !transcriptFile) {
+      setSubmitting(false);
+      setSubmitError("Your draft was restored but the report card file wasn't — please re-upload it in Step 4.");
+      return;
+    }
+
+    let transcriptPath: string | null = null;
+    let idPath: string | null = null;
+
+    if (transcriptFile) {
+      const { path, error } = await uploadApplicationFile(transcriptFile);
+      if (error || !path) {
+        setSubmitting(false);
+        setSubmitError("Something went wrong uploading your report card. Please try again.");
+        return;
+      }
+      transcriptPath = path;
+    }
+
+    if (idFile) {
+      const { path, error } = await uploadApplicationFile(idFile);
+      if (error || !path) {
+        setSubmitting(false);
+        setSubmitError("Something went wrong uploading your ID. Please try again.");
+        return;
+      }
+      idPath = path;
+    }
+
+    const { error } = await submitForm("application", { ...data, transcriptPath, idPath });
+    if (error) {
+      setSubmitting(false);
+      setSubmitError("Something went wrong submitting your application. Please try again.");
+      return;
+    }
     trackApplicationComplete();
     window.localStorage.removeItem(STORAGE_KEY);
     const params = new URLSearchParams({ type: "application" });
@@ -439,12 +483,18 @@ export function ApplicationFlow() {
               label="Most Recent School Report Card"
               required
               fileName={data.transcriptFileName}
-              onSelect={(name) => update("transcriptFileName", name)}
+              onSelect={(file) => {
+                setTranscriptFile(file);
+                update("transcriptFileName", file.name);
+              }}
             />
             <FileField
               label="School ID or Enrolment Confirmation (optional)"
               fileName={data.idFileName}
-              onSelect={(name) => update("idFileName", name)}
+              onSelect={(file) => {
+                setIdFile(file);
+                update("idFileName", file.name);
+              }}
             />
           </div>
         )}
@@ -568,13 +618,16 @@ export function ApplicationFlow() {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!valid}
+            disabled={!valid || submitting}
             className="inline-flex items-center justify-center rounded-sm bg-gold px-7 py-3.5 text-[13px] font-semibold uppercase tracking-[0.12em] text-crimson-dark transition-all duration-300 hover:-translate-y-0.5 hover:bg-gold-dark disabled:pointer-events-none disabled:opacity-40"
           >
-            Submit My Application →
+            {submitting ? "Submitting…" : "Submit My Application →"}
           </button>
         )}
       </div>
+      {submitError && (
+        <p className="mt-4 text-right text-[13px] text-crimson">{submitError}</p>
+      )}
     </div>
   );
 }
@@ -631,7 +684,7 @@ function FileField({
   label: string;
   required?: boolean;
   fileName: string;
-  onSelect: (name: string) => void;
+  onSelect: (file: File) => void;
 }) {
   const [error, setError] = useState("");
   const inputId = `file-${label
@@ -676,7 +729,7 @@ function FileField({
             return;
           }
           setError("");
-          onSelect(file.name);
+          onSelect(file);
         }}
       />
     </div>

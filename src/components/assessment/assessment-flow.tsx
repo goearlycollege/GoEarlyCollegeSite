@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { trackAssessmentComplete, trackAssessmentStart } from "@/lib/analytics";
+import { submitForm } from "@/lib/submit-form";
 
 type AssessmentData = {
   grade: string;
@@ -115,6 +116,7 @@ export function AssessmentFlow() {
   const [data, setData] = useState<AssessmentData>(DEFAULT_DATA);
   const [restored, setRestored] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const hasMounted = useRef(false);
   const screenRef = useRef<HTMLDivElement>(null);
 
@@ -165,16 +167,21 @@ export function AssessmentFlow() {
     if (screen > 0) setScreen((s) => s - 1);
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     setSubmitting(true);
+    setSubmitError(false);
+    const { error } = await submitForm("assessment", data);
+    if (error) {
+      setSubmitting(false);
+      setSubmitError(true);
+      return;
+    }
     trackAssessmentComplete();
     window.localStorage.removeItem(STORAGE_KEY);
     const params = new URLSearchParams({ type: "assessment" });
     if (data.childName) params.set("name", data.childName);
     if (data.parentEmail) params.set("email", data.parentEmail);
-    window.setTimeout(() => {
-      router.push(`/thank-you?${params.toString()}`);
-    }, 400);
+    router.push(`/thank-you?${params.toString()}`);
   }
 
   const valid = isScreenValid(screen, data);
@@ -276,6 +283,12 @@ export function AssessmentFlow() {
           </button>
         )}
       </div>
+
+      {submitError && (
+        <p className="mt-4 text-center text-[13px] text-crimson">
+          Something went wrong generating your report. Please try again.
+        </p>
+      )}
 
       {screen === TOTAL_SCREENS - 1 && (
         <p className="mt-6 text-center text-[13px] text-charcoal-soft/55">

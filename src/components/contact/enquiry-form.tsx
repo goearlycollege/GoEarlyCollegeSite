@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { trackContactFormSubmit } from "@/lib/analytics";
+import { submitForm } from "@/lib/submit-form";
 
 const I_AM_A = [
   "Grade 8",
@@ -21,18 +22,26 @@ const labelClass = "text-[12.5px] font-semibold uppercase tracking-[0.08em] text
 
 export function EnquiryForm() {
   const router = useRouter();
-  const [status, setStatus] = useState<"idle" | "submitting">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [whatsappSameAsPhone, setWhatsappSameAsPhone] = useState(true);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("submitting");
+    const formData = new FormData(e.currentTarget);
+    const payload = {
+      ...Object.fromEntries(formData.entries()),
+      whatsapp: whatsappSameAsPhone ? phone : whatsapp,
+    };
+    const { error } = await submitForm("contact", payload);
+    if (error) {
+      setStatus("error");
+      return;
+    }
     trackContactFormSubmit();
-    window.setTimeout(() => {
-      router.push("/thank-you?type=contact");
-    }, 700);
+    router.push("/thank-you?type=contact");
   }
 
   return (
@@ -139,6 +148,11 @@ export function EnquiryForm() {
       <Button type="submit" disabled={status === "submitting"} className="mt-2 w-fit">
         {status === "submitting" ? "Sending…" : "Send Enquiry →"}
       </Button>
+      {status === "error" && (
+        <p className="text-[13px] text-crimson">
+          Something went wrong sending your enquiry. Please try again.
+        </p>
+      )}
       <p className="text-[13px] leading-relaxed text-charcoal-soft/55">
         Your details are kept strictly confidential. We will never share your
         information with third parties. You will not be added to a marketing list
