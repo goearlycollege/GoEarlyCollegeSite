@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { trackContactFormSubmit } from "@/lib/analytics";
-import { submitForm } from "@/lib/submit-form";
+import { submitLead } from "@/lib/submit-form";
 
 const I_AM_A = [
   "Grade 8",
@@ -35,7 +35,7 @@ export function EnquiryForm() {
       ...Object.fromEntries(formData.entries()),
       whatsapp: whatsappSameAsPhone ? phone : whatsapp,
     };
-    const { error } = await submitForm("contact", payload);
+    const { error } = await submitLead("contact", payload);
     if (error) {
       setStatus("error");
       return;

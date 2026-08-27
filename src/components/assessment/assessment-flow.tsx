@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { trackAssessmentComplete, trackAssessmentStart } from "@/lib/analytics";
-import { submitForm } from "@/lib/submit-form";
+import { submitAssessment } from "@/lib/submit-form";
 
 type AssessmentData = {
   grade: string;
@@ -170,7 +170,7 @@ export function AssessmentFlow() {
   async function handleSubmit() {
     setSubmitting(true);
     setSubmitError(false);
-    const { error } = await submitForm("assessment", data);
+    const { error } = await submitAssessment(data);
     if (error) {
       setSubmitting(false);
       setSubmitError(true);

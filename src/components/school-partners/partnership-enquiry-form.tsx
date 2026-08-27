@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { trackSchoolPartnerEnquiry } from "@/lib/analytics";
-import { submitForm } from "@/lib/submit-form";
+import { submitLead } from "@/lib/submit-form";
 
 const SCHOOL_BOARDS = ["CBSE", "ICSE", "State Board", "International", "Multiple Boards"];
 const HEARD_ABOUT = ["Referral", "LinkedIn", "Google", "Event", "Other"];
@@ -21,7 +21,7 @@ export function PartnershipEnquiryForm() {
     e.preventDefault();
     setStatus("submitting");
     const formData = new FormData(e.currentTarget);
-    const { error } = await submitForm("school-partner", Object.fromEntries(formData.entries()));
+    const { error } = await submitLead("school-partner", Object.fromEntries(formData.entries()));
     if (error) {
       setStatus("error");
       return;

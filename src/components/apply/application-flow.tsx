@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { trackApplicationComplete, trackApplicationStart } from "@/lib/analytics";
-import { submitForm } from "@/lib/submit-form";
+import { submitApplication } from "@/lib/submit-form";
 import { uploadApplicationFile } from "@/lib/storage";
 
 type ApplicationData = {
@@ -203,7 +203,7 @@ export function ApplicationFlow() {
       idPath = path;
     }
 
-    const { error } = await submitForm("application", { ...data, transcriptPath, idPath });
+    const { error } = await submitApplication({ ...data, transcriptPath, idPath });
     if (error) {
       setSubmitting(false);
       setSubmitError("Something went wrong submitting your application. Please try again.");

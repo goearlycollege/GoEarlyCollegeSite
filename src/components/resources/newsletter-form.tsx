@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { trackNewsletterSubscribe } from "@/lib/analytics";
-import { submitForm } from "@/lib/submit-form";
+import { submitLead } from "@/lib/submit-form";
 
 export function NewsletterForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -12,7 +12,7 @@ export function NewsletterForm() {
     e.preventDefault();
     setStatus("submitting");
     const formData = new FormData(e.currentTarget);
-    const { error } = await submitForm("newsletter", Object.fromEntries(formData.entries()));
+    const { error } = await submitLead("newsletter", Object.fromEntries(formData.entries()));
     if (error) {
       setStatus("error");
       return;
